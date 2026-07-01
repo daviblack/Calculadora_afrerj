@@ -54,7 +54,7 @@ A calculadora é um **aplicativo web standalone** (um único arquivo HTML, sem d
 ### Principais recursos
 
 - ✅ **4 cenários padrão** prontos (com/sem reajuste de 11,56%, com/sem triênios).
-- ✅ **Painel de parâmetros** totalmente personalizável (classe, RPC e alíquota, triênios, PPE, auxílio moradia, ajudas de custo).
+- ✅ **Painel de parâmetros** totalmente personalizável (classe, RPC e alíquota, triênios, PPE, auxílio moradia, ajudas de custo, **função gratificada de chefia/assessoramento/direção**).
 - ✅ **Premissas avançadas** ajustáveis por *toggles* (ex.: triênio sobre produtividade, PPE tributada) — nunca alteradas silenciosamente.
 - ✅ **Variáveis globais editáveis** (tetos, alíquotas, reajuste) para o caso de a legislação mudar.
 - ✅ **Gráficos interativos** (SVG, com *hover*) e caixas **"Como ler"** em cada um.
@@ -105,6 +105,7 @@ No **painel da esquerda** ("Parâmetros do seu caso" — no celular, toque para 
 - **Triênios** — ligue e informe seus **anos de serviço público anterior**; escolha se esse tempo **conta** ou **não conta** para triênios.
 - **PPE — Prêmio de Produtividade** — ligue/desligue e ajuste o valor médio mensal.
 - **Auxílio Moradia (barreira fiscal)** — ative apenas se sua lotação for em barreira fiscal.
+- **Função de chefia / assessoramento / direção** — se você ocupar uma função gratificada (Resolução SEFAZ 874/2026), escolha o tipo (I a IV). A calculadora acrescenta o percentual correspondente do teto (STF) ao líquido — veja detalhes na seção do cálculo.
 - **Ajudas de custo** — alimentação e transporte.
 
 > 🔧 **Premissas avançadas** (no fim do painel, em "Premissas avançadas do modelo"): controles para quem quer revisar o modelo — *triênio incide sobre a produtividade*, *PPE tributada* e *RPPS sobre todo o bruto sem adesão*. Por padrão, eles reproduzem exatamente a planilha-fonte; mexa apenas se souber o que está testando.
@@ -150,9 +151,18 @@ A remuneração líquida é montada nesta ordem (a "cascata"):
 4. **RPC (RJPrev)** = alíquota (5,5%–8,5%) sobre o que **excede** o teto do RGPS, **apenas se houver adesão**
 5. **Base de IR** = bruto − previdências (+ PPE, se marcada como tributada)
 6. **IRPF** = tabela progressiva mensal de 2026 (método da parcela a deduzir)
-7. **Líquido** = bruto − previdências − IR + alimentação + transporte + PPE + moradia
+7. **Líquido** = bruto − previdências − IR + alimentação + transporte + PPE + moradia **+ função gratificada**
 
 **Triênios:** 1º triênio +10%, demais +5% cada, com teto de 60%.
+
+**Função gratificada (Resolução SEFAZ nº 874/2026, que regulamenta o art. 8º da LC nº 226/2025):** ao ser investido em função de **chefia, assessoramento ou direção**, o auditor recebe uma gratificação equivalente a um **percentual do teto do funcionalismo (subsídio do STF)**. É uma parcela **extra-teto** e **indenizatória** — **não sofre IR nem previdência** e **não conta para o abate-teto** — por isso entra como um acréscimo direto no líquido. Os quatro tipos **não são acumuláveis entre si** (só um por vez). Percentuais máximos:
+
+| Tipo | Função | % do teto (STF) |
+|---|---|---|
+| **I** | Subsecretário, Subsecretário Adjunto ou equivalente | **30%** |
+| **II** | Superintendente, Assessor-Chefe, Presidente de órgão colegiado ou equivalente | **27%** |
+| **III** | Auditor Fiscal Chefe de unidade especializada/regional, Coordenador ou Assessor | **23,5%** |
+| **IV** | Auditor Fiscal Subchefe ou demais funções de chefia/assessoramento | **20%** |
 
 > Os valores-base (vencimento, produtividade por classe), tetos, alíquotas e a tabela do IRRF estão documentados no app (aba "Como usar" → "Premissas & fórmulas") e na planilha-fonte do projeto.
 
@@ -170,6 +180,7 @@ Para manter a ferramenta **simples, viável e didática**, foram adotadas as seg
 | **Previdência complementar (RPC)** | Modelada como contribuição opcional sobre o que excede o teto do RGPS, com contrapartida do Estado. |
 | **Investimentos (RPC × conta própria)** | Usa uma **taxa de retorno anual única**. **Não modela composição de carteira**, alocação por ativos, liquidez, risco, nem tributação sobre os rendimentos do investimento por conta própria. |
 | **Verbas indenizatórias e PPE** | Tratadas como **estimativas**; valores médios mensais editáveis. Não sofrem IR nem previdência e não entram no teto. |
+| **Função gratificada** | Percentual **máximo** do teto (STF) conforme a Resolução SEFAZ 874/2026 (I 30%, II 27%, III 23,5%, IV 20%). Tratada como **extra-teto e indenizatória** (sem IR nem previdência). Assume-se que a função é **mantida** ao longo da carreira nas projeções; **não acumula** com outra função. |
 | **Triênios** | Modelados como 1º +10%, demais +5%, teto de 60%. Progressão de classe assumida a cada 3 anos nas projeções. |
 | **13º e férias** | Aparecem como **estimativa aproximada** (≈ líquido ×12 + 13º + ⅓ de férias), não como cálculo mês a mês detalhado. |
 | **Caráter geral** | É uma **estimativa de apoio à decisão**. **Não substitui** o contracheque oficial nem a legislação vigente. |
@@ -180,7 +191,13 @@ Para manter a ferramenta **simples, viável e didática**, foram adotadas as seg
 
 O versionamento segue o padrão **[SemVer](https://semver.org/lang/pt-BR/)** (`MAJOR.MINOR.PATCH`). As entradas mais recentes ficam no topo.
 
-### v2.0.0 — 30/06/2026 · *atual* 🎉
+### v2.1.0 — 30/06/2026 · *atual* 🎉
+**Função gratificada de chefia/assessoramento/direção (Resolução SEFAZ 874/2026).**
+- ➕ Novo parâmetro **"Função de chefia / assessoramento / direção"** no painel: seletor dos **4 tipos** da Resolução SEFAZ nº 874/2026 (regulamenta o art. 8º da LC nº 226/2025), cada um aplicando seu percentual do teto do STF — **I 30%, II 27%, III 23,5%, IV 20%**.
+- 🧾 Modelada como parcela **extra-teto e indenizatória** (sem IR, sem previdência, fora do abate-teto) e **não acumulável** entre si — entra como acréscimo direto no líquido, refletido no detalhamento, na cascata, no impacto marginal e na projeção de carreira.
+- ✅ **Sem regressão**: os 4 cenários padrão continuam idênticos à planilha-fonte (diferença R$ 0,00) — a novidade não altera a cascata já validada.
+
+### v2.0.0 — 30/06/2026
 **Reescrita como app standalone e correção do modelo previdenciário.**
 - ♻️ **Reescrita completa** para um app **standalone de 1 arquivo** (HTML + JavaScript puro + SVG), **sem frameworks nem CDN** — abre offline por duplo clique e é publicável em qualquer lugar.
 - 🛠️ **Correção do modelo RPPS/RPC**: o RPPS passa a ser **sempre limitado ao teto do RGPS** (aderindo ou não ao RPC), conforme a EC 103/2019. Aderir ao RPC agora **reduz** o líquido de hoje (contribuição complementar com contrapartida), em vez de aumentá-lo. O comportamento antigo da planilha ficou preservado como *toggle* avançado.
@@ -228,6 +245,7 @@ Tem uma sugestão? Veja [como contribuir](#-como-contribuir--sugerir-melhorias).
 | **`Calculadora-Remuneracao-AFRE-RJ.html`** | **A ferramenta.** App standalone — é o único arquivo necessário para usar. |
 | `RESUMO-PROJETO.md` | Documento técnico de contexto: modelo de cálculo, validações e log de decisões. |
 | `Remuneracao_AFRE-RJ.xlsx` | Planilha-fonte que serviu de "verdade" do modelo. |
+| `RESOLUÇÃO SEFAZ Nº 874 ... .pdf` | Fonte legal da **função gratificada** (percentuais por tipo de chefia/assessoramento/direção). |
 | `README.md` | Este arquivo. |
 
 ---
