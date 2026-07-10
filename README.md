@@ -151,9 +151,13 @@ A remuneração líquida é montada nesta ordem (a "cascata"):
 4. **RPC (RJPrev)** = alíquota (5,5%–8,5%) sobre o que **excede** o teto do RGPS, **apenas se houver adesão**
 5. **Base de IR** = bruto − previdências (+ PPE, se marcada como tributada)
 6. **IRPF** = tabela progressiva mensal de 2026 (método da parcela a deduzir)
-7. **Líquido** = bruto − previdências − IR + alimentação + transporte + PPE + moradia **+ função gratificada**
+7. **Líquido** = bruto − previdências − IR + alimentação + transporte + PPE + moradia + função gratificada **+ auxílio-saúde + auxílio-educação**
 
-**Triênios:** 1º triênio +10%, demais +5% cada, com teto de 60%.
+**Verbas indexadas à UFIR-RJ (2026 = R$ 4,9604):** alimentação (450 UFIR), transporte (650 UFIR), moradia (1.500 UFIR) e os auxílios saúde (até 300 UFIR) e educação (até 500 UFIR/dependente, até 3). O valor em R$ é sempre `quantidade em UFIR × valor da UFIR` — mudar a UFIR nas variáveis globais recalcula todas.
+
+**Auxílios saúde e educação (Res. SEFAZ nº 895/2026):** verbas **indenizatórias**, pagas por **reembolso mediante comprovação** de gasto, **extra-teto**, **sem IR e sem previdência** e **fora da base de 13º/férias**. Entram como acréscimo direto no líquido (como a função gratificada). O padrão é o teto; ajuste conforme a comprovação.
+
+**Triênios / ADF:** 1º triênio +10%, demais +5% cada, com teto de 60%. Para o **novo auditor** (ingresso após 06/10/2021), o triênio tradicional foi extinto pela LC 194/2021 e substituído pelo **Adicional de Desenvolvimento Funcional (ADF)** — LC 230/2026 + Decreto 50.356/2026 — com os **mesmos percentuais**, porém condicionado a avaliação de desempenho, capacitação (120h) e disciplina a cada triênio.
 
 **Função gratificada (Resolução SEFAZ nº 874/2026, que regulamenta o art. 8º da LC nº 226/2025):** ao ser investido em função de **chefia, assessoramento ou direção**, o auditor recebe uma gratificação equivalente a um **percentual do teto do funcionalismo (subsídio do STF)**. É uma parcela **extra-teto** e **indenizatória** — **não sofre IR nem previdência** e **não conta para o abate-teto** — por isso entra como um acréscimo direto no líquido. Os quatro tipos **não são acumuláveis entre si** (só um por vez). Percentuais máximos:
 
@@ -179,9 +183,10 @@ Para manter a ferramenta **simples, viável e didática**, foram adotadas as seg
 | **Previdência (RPPS)** | Contribuição de **14% limitada ao teto do RGPS** para o novo entrante (EC 103/2019), aderindo ou não ao RPC. O modelo antigo (14% sobre todo o bruto sem adesão) fica disponível como *toggle* avançado. |
 | **Previdência complementar (RPC)** | Modelada como contribuição opcional sobre o que excede o teto do RGPS, com contrapartida do Estado. |
 | **Investimentos (RPC × conta própria)** | Usa uma **taxa de retorno anual única**. **Não modela composição de carteira**, alocação por ativos, liquidez, risco, nem tributação sobre os rendimentos do investimento por conta própria. |
-| **Verbas indenizatórias e PPE** | Tratadas como **estimativas**; valores médios mensais editáveis. Não sofrem IR nem previdência e não entram no teto. |
+| **Verbas indenizatórias e PPE** | Tratadas como **estimativas**; não sofrem IR nem previdência e não entram no teto. Alimentação (450 UFIR), transporte (650 UFIR) e moradia (1.500 UFIR) são **indexadas à UFIR-RJ**. |
+| **Auxílios saúde e educação** | Res. SEFAZ 895/2026. **Indenizatórios**, por **reembolso mediante comprovação**, extra-teto, sem IR nem previdência e fora de 13º/férias. Saúde até **300 UFIR** (global); educação até **500 UFIR por dependente** (até 3). Padrão = teto; ajustável. Nas projeções, assumem-se **mantidos** e constantes (não modela dependentes envelhecendo). |
 | **Função gratificada** | Percentual **máximo** do teto (STF) conforme a Resolução SEFAZ 874/2026 (I 30%, II 27%, III 23,5%, IV 20%). Tratada como **extra-teto e indenizatória** (sem IR nem previdência). Assume-se que a função é **mantida** ao longo da carreira nas projeções; **não acumula** com outra função. |
-| **Triênios** | Modelados como 1º +10%, demais +5%, teto de 60%. Progressão de classe assumida a cada 3 anos nas projeções. |
+| **Triênios / ADF** | Modelados como 1º +10%, demais +5%, teto de 60%. Para o novo auditor, é o **ADF** (LC 230/2026, Decreto 50.356/2026), com o mesmo cálculo, porém condicionado a desempenho/capacitação/disciplina. Progressão de classe assumida a cada 3 anos nas projeções. |
 | **13º e férias** | Aparecem como **estimativa aproximada** (≈ líquido ×12 + 13º + ⅓ de férias), não como cálculo mês a mês detalhado. |
 | **Caráter geral** | É uma **estimativa de apoio à decisão**. **Não substitui** o contracheque oficial nem a legislação vigente. |
 
@@ -191,7 +196,16 @@ Para manter a ferramenta **simples, viável e didática**, foram adotadas as seg
 
 O versionamento segue o padrão **[SemVer](https://semver.org/lang/pt-BR/)** (`MAJOR.MINOR.PATCH`). As entradas mais recentes ficam no topo.
 
-### v2.1.0 — 30/06/2026 · *atual* 🎉
+### v2.2.0 — 10/07/2026 · *atual* 🎉
+**UFIR-RJ como variável global, auxílios saúde e educação (Res. SEFAZ 895/2026) e reindexação das verbas indenizatórias.**
+- ➕ Nova **variável global UFIR-RJ** (2026 = **R$ 4,9604**, Res. SEFAZ nº 849/2025), editável no drawer, que passa a indexar as verbas.
+- 🩺 Novo **Auxílio-Saúde** (Res. SEFAZ nº 895/2026): reembolso de até **300 UFIR-RJ/mês** (≈ R$ 1.488,12), **global** (independe de dependentes), ajustável por comprovação — padrão no teto. Indenizatório, extra-teto, sem IR nem previdência.
+- 🎓 Novo **Auxílio-Educação** (Res. SEFAZ nº 895/2026): reembolso de até **500 UFIR-RJ por dependente/mês** (≈ R$ 2.480,20), limitado a **3 dependentes**, ajustável por comprovação — padrão no teto. Mesma natureza indenizatória.
+- 🔄 **Alimentação, transporte e moradia reindexados à UFIR-RJ**: alimentação **450 UFIR** (R$ 2.232,18), transporte **650 UFIR** (R$ 3.224,26) e moradia **1.500 UFIR** (R$ 7.440,60). Mudar a UFIR recalcula todas de uma vez. *(Isso eleva o líquido dos 4 cenários padrão em +R$ 2.573,84 vs. a v2.1.0 — atualização legal, não regressão.)*
+- 🧾 **Nota didática do ADF**: para o novo auditor (ingresso após 06/10/2021), o triênio tradicional foi extinto pela LC 194/2021 e substituído pelo **Adicional de Desenvolvimento Funcional — ADF** (LC 230/2026 + Decreto 50.356/2026), com o **mesmo cálculo** já modelado (1º +10%, demais +5%, teto 60%), porém condicionado a desempenho/capacitação/disciplina. Sem mudança no cálculo.
+- ✅ **Sem regressão no núcleo**: os auxílios entram como acréscimo indenizatório no fim da cascata (como a função gratificada), sem tocar em IR, previdência, abate-teto nem na base de 13º/férias. Cálculos revalidados via Node.
+
+### v2.1.0 — 30/06/2026
 **Função gratificada de chefia/assessoramento/direção (Resolução SEFAZ 874/2026).**
 - ➕ Novo parâmetro **"Função de chefia / assessoramento / direção"** no painel: seletor dos **4 tipos** da Resolução SEFAZ nº 874/2026 (regulamenta o art. 8º da LC nº 226/2025), cada um aplicando seu percentual do teto do STF — **I 30%, II 27%, III 23,5%, IV 20%**.
 - 🧾 Modelada como parcela **extra-teto e indenizatória** (sem IR, sem previdência, fora do abate-teto) e **não acumulável** entre si — entra como acréscimo direto no líquido, refletido no detalhamento, na cascata, no impacto marginal e na projeção de carreira.
@@ -246,6 +260,7 @@ Tem uma sugestão? Veja [como contribuir](#-como-contribuir--sugerir-melhorias).
 | `RESUMO-PROJETO.md` | Documento técnico de contexto: modelo de cálculo, validações e log de decisões. |
 | `Remuneracao_AFRE-RJ.xlsx` | Planilha-fonte que serviu de "verdade" do modelo. |
 | `RESOLUÇÃO SEFAZ Nº 874 ... .pdf` | Fonte legal da **função gratificada** (percentuais por tipo de chefia/assessoramento/direção). |
+| `novos beneficios 07-2026/` | Fontes legais de 2026: **Res. SEFAZ 895/2026** (auxílios saúde e educação), **LC 230/2026 + Decreto 50.356/2026** (ADF) e planilha de vantagens/benefícios com a **UFIR-RJ 2026**. |
 | `README.md` | Este arquivo. |
 
 ---
