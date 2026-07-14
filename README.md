@@ -54,7 +54,7 @@ A calculadora é um **aplicativo web standalone** (um único arquivo HTML, sem d
 ### Principais recursos
 
 - ✅ **4 cenários padrão** prontos (com/sem reajuste de 11,56%, com/sem triênios).
-- ✅ **Painel de parâmetros** totalmente personalizável (classe, RPC e alíquota, triênios, PPE, auxílio moradia, ajudas de custo, **função gratificada de chefia/assessoramento/direção**).
+- ✅ **Painel de parâmetros** totalmente personalizável (classe, RPC e alíquota, triênios, PPE, auxílio moradia, ajudas de custo, **função gratificada de chefia/assessoramento/direção** e **gratificação de presença em órgão de deliberação coletiva**).
 - ✅ **Premissas avançadas** ajustáveis por *toggles* (ex.: triênio sobre produtividade, PPE tributada) — nunca alteradas silenciosamente.
 - ✅ **Variáveis globais editáveis** (tetos, alíquotas, reajuste) para o caso de a legislação mudar.
 - ✅ **Gráficos interativos** (SVG, com *hover*) e caixas **"Como ler"** em cada um.
@@ -108,6 +108,7 @@ No **painel da esquerda** ("Parâmetros do seu caso" — no celular, toque para 
 - **PPE — Prêmio de Produtividade** — ligue/desligue e ajuste o valor médio mensal.
 - **Auxílio Moradia (barreira fiscal)** — ative apenas se sua lotação for em barreira fiscal.
 - **Função de chefia / assessoramento / direção** — se você ocupar uma função gratificada (Resolução SEFAZ 874/2026), escolha o tipo (I a IV). A calculadora acrescenta o percentual correspondente do teto (STF) ao líquido — veja detalhes na seção do cálculo.
+- **Órgão de deliberação coletiva** — se você for membro do **Conselho de Contribuintes** (ou Representante da Fazenda) ou da **Junta de Revisão Fiscal**, escolha o órgão, o seu cargo no colegiado e quantas sessões você realizou no mês. Só é possível escolher **um** órgão: o Estatuto veda participar de mais de um (art. 170). Em compensação, a gratificação **acumula com todo o resto** (art. 171), inclusive com a função gratificada.
 - **Ajudas de custo** — alimentação e transporte.
 
 > 🔧 **Premissas avançadas** (no fim do painel, em "Premissas avançadas do modelo"): controles para quem quer revisar o modelo — *triênio incide sobre a produtividade*, *PPE tributada* e *RPPS sobre todo o bruto sem adesão*. Por padrão, eles reproduzem exatamente a planilha-fonte; mexa apenas se souber o que está testando.
@@ -153,11 +154,31 @@ A remuneração líquida é montada nesta ordem (a "cascata"):
 4. **RPC (RJPrev)** = alíquota (5,5%–8,5%) sobre o que **excede** o teto do RGPS, **apenas se houver adesão**
 5. **Base de IR** = bruto − previdências (+ PPE, se marcada como tributada)
 6. **IRPF** = tabela progressiva mensal de 2026 (método da parcela a deduzir)
-7. **Líquido** = bruto − previdências − IR + alimentação + transporte + PPE + moradia + função gratificada **+ auxílio-saúde + auxílio-educação**
+7. **Líquido** = bruto − previdências − IR + alimentação + transporte + PPE + moradia + função gratificada + auxílio-saúde + auxílio-educação **+ gratificação de presença em colegiado**
 
-**Verbas indexadas à UFIR-RJ (2026 = R$ 4,9604):** alimentação (450 UFIR), transporte (650 UFIR), moradia (1.500 UFIR) e os auxílios saúde (até 300 UFIR) e educação (até 500 UFIR/dependente, até 3). O valor em R$ é sempre `quantidade em UFIR × valor da UFIR` — mudar a UFIR nas variáveis globais recalcula todas.
+**Verbas indexadas à UFIR-RJ (2026 = R$ 4,9604):** alimentação (450 UFIR), transporte (650 UFIR), moradia (1.500 UFIR), os auxílios saúde (até 300 UFIR) e educação (até 500 UFIR/dependente, até 3) e a **sessão de colegiado** (250 UFIR no Conselho, 100 UFIR na Junta). O valor em R$ é sempre `quantidade em UFIR × valor da UFIR` — mudar a UFIR nas variáveis globais recalcula todas.
 
 **Auxílios saúde e educação (Res. SEFAZ nº 895/2026):** verbas **indenizatórias**, pagas por **reembolso mediante comprovação** de gasto, **extra-teto**, **sem IR e sem previdência** e **fora da base de 13º/férias**. Entram como acréscimo direto no líquido (como a função gratificada). O padrão é o teto; ajuste conforme a comprovação.
+
+**Gratificação de presença em órgão de deliberação coletiva (Decreto nº 50.369/2026):** paga **por sessão realizada**, e não por mês fechado. Também é **indenizatória** — entra no líquido depois do IR, sem previdência, fora do abate-teto e da base de 13º/férias.
+
+| Órgão | Por sessão | Máximo por mês | No teto |
+|---|---|---|---|
+| Conselho de Contribuintes / Representantes da Fazenda | 250 UFIR-RJ (R$ 1.240,10) | 14 sessões | R$ 17.361,40 |
+| Junta de Revisão Fiscal | 100 UFIR-RJ (R$ 496,04) | 12 sessões | R$ 5.952,48 |
+
+Quem preside ou secretaria o colegiado recebe um **acréscimo de representação** sobre essa gratificação (parágrafo único do art. 1º dos Decretos 12.936/1989 e 41.904/2009, que o decreto de 2026 **não** revogou — ele só deu redação nova ao caput):
+
+| Cargo no colegiado | Acréscimo |
+|---|---|
+| Presidente do Conselho | +40% |
+| Presidente de Câmara · Representante Geral da Fazenda | +20% |
+| Secretário-Geral | +10% |
+| Secretário de Câmara | +5% |
+| Presidente de Turma (Junta) | +20% |
+| Secretário de Turma (Junta) | +5% |
+
+Duas regras do **Estatuto** (Decreto nº 2.479/1979) moldam o parâmetro. O **art. 170** veda participar de mais de um órgão de deliberação coletiva — por isso o painel tem um seletor único, e não dois controles somáveis: não existe estado que represente dois colegiados. (Quem é membro nato de mais de um opta pela gratificação de maior valor, o que continua sendo *uma* escolha.) E o **art. 171** a torna **acumulável com quaisquer outras vantagens**: ela soma com a função gratificada, a PPE e os auxílios, sem trava.
 
 **Triênios / ADF:** 1º triênio +10%, demais +5% cada, com teto de 60%. Para o **novo auditor** (ingresso após 06/10/2021), o triênio tradicional foi extinto pela LC 194/2021 e substituído pelo **Adicional de Desenvolvimento Funcional (ADF)** — LC 230/2026 + Decreto 50.356/2026 — com os **mesmos percentuais**, porém condicionado a avaliação de desempenho, capacitação (120h) e disciplina a cada triênio.
 
@@ -188,6 +209,7 @@ Para manter a ferramenta **simples, viável e didática**, foram adotadas as seg
 | **Verbas indenizatórias e PPE** | Tratadas como **estimativas**; não sofrem IR nem previdência e não entram no teto. Alimentação (450 UFIR), transporte (650 UFIR) e moradia (1.500 UFIR) são **indexadas à UFIR-RJ**. |
 | **Auxílios saúde e educação** | Res. SEFAZ 895/2026. **Indenizatórios**, por **reembolso mediante comprovação**, extra-teto, sem IR nem previdência e fora de 13º/férias. Saúde até **300 UFIR** (global); educação até **500 UFIR por dependente** (até 3). Padrão = teto; ajustável. Nas projeções, assumem-se **mantidos** e constantes (não modela dependentes envelhecendo). |
 | **Função gratificada** | Percentual **máximo** do teto (STF) conforme a Resolução SEFAZ 874/2026 (I 30%, II 27%, III 23,5%, IV 20%). Tratada como **extra-teto e indenizatória** (sem IR nem previdência). Assume-se que a função é **mantida** ao longo da carreira nas projeções; **não acumula** com outra função. |
+| **Gratificação de presença** | Dec. 50.369/2026. Por **sessão realizada**: 250 UFIR no Conselho de Contribuintes (até 14/mês) e 100 UFIR na Junta de Revisão Fiscal (até 12/mês), com acréscimo de representação para presidências e secretarias. **Indenizatória**, extra-teto, sem IR nem previdência, fora de 13º/férias. **Vedado** participar de mais de um órgão (Estatuto, art. 170); **acumulável** com as demais vantagens (art. 171). Nas projeções, assume-se o número de sessões **constante** ao longo da carreira. |
 | **Triênios / ADF** | Modelados como 1º +10%, demais +5%, teto de 60%. Para o novo auditor, é o **ADF** (LC 230/2026, Decreto 50.356/2026), com o mesmo cálculo, porém condicionado a desempenho/capacitação/disciplina. Progressão de classe assumida a cada 3 anos nas projeções. |
 | **13º e férias** | Aparecem como **estimativa aproximada** (≈ líquido ×12 + 13º + ⅓ de férias), não como cálculo mês a mês detalhado. |
 | **Caráter geral** | É uma **estimativa de apoio à decisão**. **Não substitui** o contracheque oficial nem a legislação vigente. |
@@ -196,29 +218,14 @@ Para manter a ferramenta **simples, viável e didática**, foram adotadas as seg
 
 ## 🗒️ Histórico de versões
 
-**Versão atual: `v3.0.0`** — redesenho completo da interface, modo escuro e régua dos tetos. Sem mudança no cálculo: o motor (bruto, previdências e IRPF) reproduz a planilha-fonte com **diferença de R$ 0,00** nos 4 cenários padrão, até a última casa decimal. O líquido final fica **R$ 2.573,84 acima** do da planilha porque a Res. SEFAZ 895/2026 reindexou alimentação e transporte à UFIR-RJ — atualização legal, não regressão.
+**Versão atual: `v3.1.0`** — gratificação de presença em órgão de deliberação coletiva (Dec. 50.369/2026). Sem mudança no líquido padrão: a verba nasce desligada, e os 55 cenários da versão anterior saíram com **zero diferenças**. O motor (bruto, previdências e IRPF) segue reproduzindo a planilha-fonte com **diferença de R$ 0,00** nos 4 cenários padrão, até a última casa decimal. O líquido final fica **R$ 2.573,84 acima** do da planilha porque a Res. SEFAZ 895/2026 reindexou alimentação e transporte à UFIR-RJ — atualização legal, não regressão.
 
 📄 **O histórico completo está em [`CHANGELOG.md`](CHANGELOG.md)** — todas as versões, da v0.1.0 até hoje, com o que mudou em cada uma e por quê.
 
 ---
 
-## 🧭 Roadmap — próximos passos
-
-Ideias mapeadas para versões futuras (sujeitas a prioridade):
-
-- [ ] **Renda na aposentadoria** estimada (converter o saldo do RPC em renda mensal).
-- [ ] **VPL** da decisão do RPC (trazer valores a valor presente, descontando uma taxa real).
-- [ ] **"Custo do teto"** acumulado como KPI dedicado.
-- [ ] **Dependentes** e **desconto simplificado** no cálculo do IR.
-- [ ] **Comparação entre carreiras/órgãos** (ex.: AFRE-RJ × Receita Federal).
-
-Tem uma sugestão? Veja [como contribuir](#-como-contribuir--sugerir-melhorias). 🙌
-
----
 
 
-
----
 
 ## 🤝 Como contribuir / sugerir melhorias
 
