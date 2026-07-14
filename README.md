@@ -42,7 +42,7 @@ A ferramenta foi idealizada **com a melhor das intenções**, para servir de apo
 
 ## 🚀 O que a ferramenta faz
 
-A calculadora é um **aplicativo web standalone** (um único arquivo HTML, sem dependências, sem instalação) organizado em **4 abas**:
+A calculadora é um **aplicativo web standalone** (um único arquivo HTML, sem framework, sem build, sem instalação) organizado em **4 abas**:
 
 | Aba | O que mostra |
 |---|---|
@@ -224,7 +224,17 @@ Para manter a ferramenta **simples, viável e didática**, foram adotadas as seg
 
 ---
 
+## 🧭 Roadmap — próximos passos
 
+Ideias mapeadas para versões futuras (sujeitas a prioridade):
+
+- [ ] **Renda na aposentadoria** estimada (converter o saldo do RPC em renda mensal).
+- [ ] **VPL** da decisão do RPC (trazer valores a valor presente, descontando uma taxa real).
+- [ ] **"Custo do teto"** acumulado como KPI dedicado.
+
+Tem uma sugestão? Veja [como contribuir](#-como-contribuir--sugerir-melhorias). 🙌
+
+---
 
 
 ## 🤝 Como contribuir / sugerir melhorias
@@ -241,7 +251,15 @@ Toda crítica construtiva é bem-vinda — a ferramenta foi idealizada com a mel
 
 **Desenvolvido por Davi Teixeira** — criador de conteúdo para concursos · 📸 [@daviteixeira.concursos](https://instagram.com/daviteixeira.concursos)
 
-© 2026 Davi Teixeira. **Uso livre para fins educacionais e de estudo**, desde que **mantidos os créditos ao autor e o link do Instagram**. Para **reuso, adaptação ou redistribuição** (especialmente com fins comerciais), entre em contato pelo Instagram acima.
+© 2026 Davi Teixeira. Projeto **pessoal e independente** — não é produto, publicação ou serviço da SEFAZ-RJ, e não tem endosso de órgão público algum.
+
+O texto completo está na **[LICENSE.md](LICENSE.md)**. Em três linhas:
+
+- ✅ **Pode** usar para estudo e planejamento próprio, e repassar o arquivo **íntegro e inalterado**, de graça, com os créditos preservados.
+- ❌ **Não pode** modificar, criar versão derivada (para outro estado, órgão ou carreira), remover os créditos, republicar como seu, nem usar comercialmente — incluindo embutir em curso, produto ou serviço pago.
+- ✉️ **Quer fazer algo fora disso?** É conversável, mas depende de autorização prévia por escrito. Fale pelo Instagram.
+
+A licença traz ainda a **exclusão de garantia**, a **limitação de responsabilidade** (leia antes de decidir sobre o RPC com base nela) e a **cláusula de privacidade** — seus dados não saem do seu navegador. Os componentes de terceiros estão em **[NOTICE.md](NOTICE.md)**.
 
 ---
 
