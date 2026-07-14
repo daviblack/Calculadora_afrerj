@@ -1,0 +1,2243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de Remuneração · Auditor Fiscal SEFAZ-RJ</title>
+<meta name="description" content="Calculadora interativa de remuneração do Auditor Fiscal da Receita Estadual (AFRE) da SEFAZ-RJ. Apoio à decisão para novos auditores — base 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<script>/* tema antes da primeira pintura — evita flash */
+(function(){try{var t=localStorage.getItem('afre_theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<style>
+/* ═══════════ TOKENS ═══════════
+   Claro no :root. Escuro no media query E no override [data-theme],
+   nessa ordem — assim o override vence nos dois sentidos.            */
+:root{
+  color-scheme:light;
+  --f-ui:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-display:'Bricolage Grotesque','IBM Plex Sans',system-ui,sans-serif;
+  --f-num:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --fs-micro:10.5px; --fs-cap:11.5px; --fs-sm:12.5px; --fs-md:13.5px;
+  --fs-lg:15px; --fs-xl:18px; --fs-2xl:22px; --fs-3xl:26px;
+  --fs-hero:clamp(32px,5.2vw,54px);
+  --ls-cap:.08em;
+  --sp1:4px; --sp2:8px; --sp3:12px; --sp4:16px; --sp5:20px; --sp6:24px; --sp7:32px;
+  --r1:8px; --r2:12px; --r3:16px; --r4:22px; --rp:999px;
+  --bg:#EEF1F7; --bg-2:#E3E8F2;
+  --surface:#FFFFFF; --surface-2:#F5F8FC; --surface-3:#E9EEF6;
+  --line:#E5EAF2; --line-soft:#EEF1F6;
+  --ink:#0F1B2D; --muted:#5A6B82; --faint:#8B99AD;
+  /* verde = ação E positivo. No original o verde acumula os dois papéis; é a identidade. */
+  --brand:#0E7A4E; --brand-2:#15935F; --brand-ink:#0A5F3D; --brand-deep:#0A2E57; --brand-soft:#E6F5ED;
+  --on-brand:#FFFFFF;
+  --pos:#0E7A4E; --pos-2:#3FAE7D; --pos-ink:#0A5F3D;
+  --neg:#D2453A; --neg-ink:#B0342A;
+  --warn:#C97A16; --warn-ink:#92590F;
+  --c-grid:#EEF1F6; --c-axis:#DFE5EE; --c-conn:#C5CEDB;
+  --c-off:#C7D2DE; --c-alt:#7FB3DA; --c-prev:#3B82C4; --c-nominal:#5A93CE; --c-bruto:#1769C4;
+  --c-tip-bg:#0F2440; --c-tip-ink:#FFFFFF; --c-tip-key:#9FC0E6;
+  /* o hero é o "visor do instrumento": escuro nos dois temas. Três paradas — navy → navy2 → verde-petróleo. */
+  --hero-1:#0A2E57; --hero-2:#0E3E6E; --hero-3:#125A3F;
+  --hero-glow:rgba(63,174,125,.40); --hero-glow2:rgba(23,105,196,.30);
+  --hero-ink:#FFFFFF; --hero-dim:#9FC0E6; --hero-line:rgba(255,255,255,.14); --hero-track:rgba(255,255,255,.10);
+  --hero-warn-ink:#FFE2B8; --rail-a:#5DA3EA; --rail-b:#34C98A;
+  --shadow:0 1px 2px rgba(16,27,45,.05),0 8px 24px rgba(16,27,45,.06);
+  --shadow-md:0 12px 30px rgba(10,46,87,.12);
+  --shadow-lg:0 24px 60px rgba(10,30,60,.28);
+  --hd-h:150px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#080D15; --bg-2:#0C1320;
+    --surface:#121A29; --surface-2:#182233; --surface-3:#1F2A3D;
+    --line:#25324A; --line-soft:#1C2637;
+    --ink:#EAF0F8; --muted:#9FB0C6; --faint:#7B8CA3;
+    --brand:#25A877; --brand-2:#4FD3A0; --brand-ink:#4FD3A0; --brand-deep:#4A93D8; --brand-soft:#123626;
+    --on-brand:#08131E;
+    --pos:#25A877; --pos-2:#5FCBA0; --pos-ink:#4FD3A0;
+    --neg:#E0605A; --neg-ink:#F08C86;
+    --warn:#C08526; --warn-ink:#E0A94A;
+    --c-grid:#1E2A3C; --c-axis:#2A3852; --c-conn:#3A4A63;
+    --c-off:#38465C; --c-alt:#3E6E9E; --c-prev:#4A93D8; --c-nominal:#2F6FB8; --c-bruto:#4A93D8;
+    --c-tip-bg:#1B2739; --c-tip-ink:#EAF0F8; --c-tip-key:#8FB8E0;
+    --hero-1:#08243F; --hero-2:#0B3357; --hero-3:#0E4630;
+    --hero-glow:rgba(63,174,125,.28); --hero-glow2:rgba(23,105,196,.22);
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+    --shadow-md:0 12px 30px rgba(0,0,0,.45);
+    --shadow-lg:0 24px 60px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#080D15; --bg-2:#0C1320;
+  --surface:#121A29; --surface-2:#182233; --surface-3:#1F2A3D;
+  --line:#25324A; --line-soft:#1C2637;
+  --ink:#EAF0F8; --muted:#9FB0C6; --faint:#7B8CA3;
+  --brand:#25A877; --brand-2:#4FD3A0; --brand-ink:#4FD3A0; --brand-deep:#4A93D8; --brand-soft:#123626;
+  --on-brand:#08131E;
+  --pos:#25A877; --pos-2:#5FCBA0; --pos-ink:#4FD3A0;
+  --neg:#E0605A; --neg-ink:#F08C86;
+  --warn:#C08526; --warn-ink:#E0A94A;
+  --c-grid:#1E2A3C; --c-axis:#2A3852; --c-conn:#3A4A63;
+  --c-off:#38465C; --c-alt:#3E6E9E; --c-prev:#4A93D8; --c-nominal:#2F6FB8; --c-bruto:#4A93D8;
+  --c-tip-bg:#1B2739; --c-tip-ink:#EAF0F8; --c-tip-key:#8FB8E0;
+  --hero-1:#08243F; --hero-2:#0B3357; --hero-3:#0E4630;
+  --hero-glow:rgba(63,174,125,.28); --hero-glow2:rgba(23,105,196,.22);
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+  --shadow-md:0 12px 30px rgba(0,0,0,.45);
+  --shadow-lg:0 24px 60px rgba(0,0,0,.6);
+}
+/* tons semânticos — substituem TODO style="color:#..." gerado pelo JS */
+.t-ink  {--tone:var(--ink);       --tone-v:var(--ink)}
+.t-bruto{--tone:var(--c-bruto);   --tone-v:var(--c-bruto)}
+.t-pos  {--tone:var(--pos-ink);   --tone-v:var(--pos)}
+.t-neg  {--tone:var(--neg-ink);   --tone-v:var(--neg)}
+.t-warn {--tone:var(--warn-ink);  --tone-v:var(--warn)}
+.t-faint{--tone:var(--faint);     --tone-v:var(--c-off)}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--f-ui);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip;
+  background:radial-gradient(1100px 650px at 84% -12%,color-mix(in srgb,var(--brand) 11%,transparent),transparent 70%),
+             linear-gradient(180deg,var(--bg),var(--bg-2));
+  background-attachment:fixed}
+img,svg{max-width:100%}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+button,input,select{font-family:inherit;color:inherit}
+a{color:var(--brand-ink)}
+::selection{background:var(--brand);color:var(--on-brand)}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:6px}
+.hidden{display:none!important}
+.afre-scroll{scrollbar-width:thin;scrollbar-color:var(--c-conn) transparent}
+.afre-scroll::-webkit-scrollbar{width:8px;height:8px}
+.afre-scroll::-webkit-scrollbar-thumb{background:var(--c-conn);border-radius:6px}
+.afre-scroll::-webkit-scrollbar-track{background:transparent}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1340px;margin:0 auto;padding:0 var(--sp6)}
+.app{min-height:100vh;display:flex;flex-direction:column}
+main{flex:1;width:100%}
+.cols{display:grid;grid-template-columns:376px minmax(0,1fr);gap:var(--sp6);align-items:start;padding:var(--sp6) 0}
+.results{display:flex;flex-direction:column;gap:var(--sp5);min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r3);box-shadow:var(--shadow);
+  transition:box-shadow .25s ease,border-color .25s ease}
+.pad{padding:var(--sp5)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp5)}
+.grid-wf{display:grid;grid-template-columns:1.05fr .95fr;gap:var(--sp5);align-items:start}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:40;border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--surface) 86%,transparent);
+  backdrop-filter:saturate(1.5) blur(14px);-webkit-backdrop-filter:saturate(1.5) blur(14px)}
+.hbar{display:flex;align-items:center;gap:var(--sp4);padding:var(--sp3) 0}
+/* azul → verde: o gradiente do logo do original. O #fff aqui é ícone, não texto. */
+.logo{width:42px;height:42px;border-radius:13px;flex:none;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(145deg,var(--c-bruto),var(--brand));box-shadow:inset 0 1px 0 rgba(255,255,255,.28)}
+.logo svg{width:21px;height:21px;display:block}
+.htitle{font-family:var(--f-display);font-size:var(--fs-xl);font-weight:700;letter-spacing:-.03em;line-height:1.1}
+.hsub{font-size:var(--fs-cap);color:var(--faint);font-weight:500}
+.hactions{display:flex;align-items:center;gap:var(--sp2);flex-wrap:wrap}
+.hspacer{flex:1}
+.hbtn{display:inline-flex;align-items:center;gap:7px;background:var(--surface-2);border:1px solid var(--line);
+  color:var(--muted);padding:9px 13px;border-radius:10px;font-size:var(--fs-sm);font-weight:600;cursor:pointer;
+  transition:background .16s,color .16s,border-color .16s,transform .1s}
+.hbtn:hover{background:var(--surface-3);color:var(--ink);border-color:var(--c-axis)}
+.hbtn:active{transform:translateY(1px)}
+.hbtn.primary{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.hbtn.primary:hover{background:var(--brand-2);border-color:var(--brand-2);color:var(--on-brand)}
+.hbtn svg{width:15px;height:15px;flex:none}
+.hbtn.only-ic{padding:9px;width:38px;justify-content:center}
+.theme-sun{display:none}
+:root[data-theme="dark"] .theme-sun{display:block}
+:root[data-theme="dark"] .theme-moon{display:none}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .theme-sun{display:block}
+  :root:not([data-theme="light"]) .theme-moon{display:none}
+}
+.presetbar{border-top:1px solid var(--line-soft)}
+.presetrow{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp2) 0 var(--sp3)}
+.preset-label{font-size:var(--fs-micro);font-weight:700;letter-spacing:var(--ls-cap);text-transform:uppercase;
+  color:var(--faint);white-space:nowrap}
+.preset-scroll{display:flex;gap:6px;min-width:0;overflow-x:auto;scrollbar-width:none;padding:2px}
+.preset-scroll::-webkit-scrollbar{display:none}
+.preset{padding:7px 13px;border-radius:var(--rp);border:1px solid var(--line);background:var(--surface-2);
+  color:var(--muted);font-size:var(--fs-sm);font-weight:600;cursor:pointer;white-space:nowrap;
+  transition:background .16s,color .16s,border-color .16s,transform .1s}
+.preset:hover{border-color:var(--brand-2);color:var(--ink)}
+.preset:active{transform:translateY(1px)}
+.preset.on{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.preset .pn{font-family:var(--f-num);font-weight:700;opacity:.7;margin-right:5px}
+.preset.on .pn{opacity:1}
+.scenario-tag{font-size:var(--fs-cap);color:var(--faint);font-weight:600;white-space:nowrap}
+.tabs{border-top:1px solid var(--line-soft)}
+.tabrow{display:flex;gap:var(--sp1);overflow-x:auto;scrollbar-width:none}
+.tabrow::-webkit-scrollbar{display:none}
+.tab{position:relative;padding:13px 14px;border:none;background:transparent;color:var(--faint);
+  font-size:var(--fs-md);font-weight:600;cursor:pointer;white-space:nowrap;transition:color .18s}
+.tab::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:2.5px;border-radius:3px 3px 0 0;
+  background:var(--brand);transform:scaleX(0);transform-origin:50% 100%;
+  transition:transform .28s cubic-bezier(.22,1,.36,1)}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--ink);font-weight:700}
+.tab.on::after{transform:scaleX(1)}
+.t-abbr{display:none}
+
+/* ---------- painel de parâmetros ---------- */
+.panel{position:sticky;top:calc(var(--hd-h) + 16px);max-height:calc(100vh - var(--hd-h) - 32px);overflow:auto;padding:var(--sp5)}
+.panel h4{font-size:var(--fs-micro);font-weight:700;letter-spacing:var(--ls-cap);text-transform:uppercase;
+  color:var(--faint);margin:0 0 var(--sp4)}
+.field{padding:var(--sp4) 0;border-top:1px solid var(--line-soft)}
+.field:first-of-type{border-top:none;padding-top:2px}
+.field-head{display:flex;align-items:center;justify-content:space-between;gap:var(--sp3)}
+.field-title{font-size:var(--fs-md);font-weight:600;color:var(--ink);letter-spacing:-.01em}
+.field-desc{font-size:var(--fs-cap);color:var(--faint);line-height:1.4;margin-top:2px}
+.label{display:block;font-size:var(--fs-sm);font-weight:600;color:var(--muted);margin-bottom:var(--sp2)}
+.seg{display:flex;gap:5px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r2);padding:4px}
+.seg button{flex:1;padding:9px 6px;border-radius:9px;border:none;background:transparent;color:var(--muted);
+  font-size:var(--fs-sm);font-weight:600;cursor:pointer;transition:background .16s,color .16s}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--ink);color:var(--surface)}
+.subpanel{margin-top:var(--sp3);padding:var(--sp3);background:var(--surface-2);border:1px solid var(--line-soft);
+  border-radius:var(--r2)}
+.row-between{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp2)}
+.inp{padding:9px 11px;border:1px solid var(--line);border-radius:var(--r1);font-size:var(--fs-md);font-weight:600;
+  color:var(--ink);font-family:var(--f-num);background:var(--surface);width:100%;
+  transition:border-color .16s,box-shadow .16s}
+.inp:focus{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent);outline:none}
+select.inp{font-family:var(--f-ui);font-size:var(--fs-sm)}
+.inp.center{text-align:center}
+.money{display:flex;align-items:center;gap:var(--sp2)}
+.money .cur{font-size:var(--fs-sm);color:var(--faint);font-weight:600}
+.hint{font-size:var(--fs-cap);color:var(--muted)}
+.k-row{margin-top:var(--sp3);display:flex;justify-content:space-between;gap:var(--sp2);font-size:var(--fs-cap);color:var(--muted)}
+.k-row b{color:var(--pos-ink);font-family:var(--f-num)}
+.sub-k{font-size:var(--fs-sm);font-weight:600;color:var(--muted)}
+.sub-v{font-size:var(--fs-md);font-weight:700;color:var(--pos-ink)}
+/* legenda de valor sob um gráfico: texto corrido, NÃO um flex esparramado */
+.stat{margin-top:var(--sp3);font-size:var(--fs-sm);color:var(--muted)}
+.stat b{color:var(--ink);font-family:var(--f-num);font-weight:600}
+
+/* toggle switch */
+.sw{position:relative;width:46px;height:26px;border-radius:var(--rp);border:none;cursor:pointer;padding:0;flex:none;
+  background:var(--c-off);transition:background .2s cubic-bezier(.22,1,.36,1)}
+.sw .knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .22s cubic-bezier(.22,1,.36,1)}
+.sw.on{background:var(--brand-2)}
+.sw.on .knob{transform:translateX(20px)}
+
+/* sliders */
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:var(--rp);
+  background:var(--surface-3);outline:none;margin:10px 0 6px;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--brand);cursor:pointer;border:3px solid var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.28);
+  transition:transform .14s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--brand);cursor:pointer;
+  border:3px solid var(--surface)}
+.range-ends{display:flex;justify-content:space-between;font-size:var(--fs-micro);color:var(--faint);font-family:var(--f-num)}
+
+/* ---------- hero: o visor do instrumento ---------- */
+.hero{position:relative;overflow:hidden;border-radius:var(--r4);padding:var(--sp6) var(--sp7);color:var(--hero-ink);
+  background:linear-gradient(135deg,var(--hero-1) 0%,var(--hero-2) 55%,var(--hero-3) 100%);box-shadow:var(--shadow-md)}
+.hero::before{content:"";position:absolute;right:-90px;top:-140px;width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,var(--hero-glow),transparent 68%);pointer-events:none}
+.hero::after{content:"";position:absolute;left:-70px;bottom:-170px;width:340px;height:340px;border-radius:50%;
+  background:radial-gradient(circle,var(--hero-glow2),transparent 70%);pointer-events:none}
+.hero>*{position:relative;z-index:1}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--sp5);flex-wrap:wrap}
+.hero-label{font-size:var(--fs-cap);font-weight:600;letter-spacing:var(--ls-cap);color:var(--hero-dim);text-transform:uppercase}
+.hero-big{font-size:var(--fs-hero);font-weight:700;line-height:1;letter-spacing:-.035em;margin-top:10px}
+.hero-sub{font-size:var(--fs-sm);color:var(--hero-dim);margin-top:9px}
+.hero-aside{display:flex;flex-direction:column;align-items:flex-end;gap:5px;text-align:right}
+.chip-soft{font-size:var(--fs-cap);color:var(--hero-dim)}
+.chip-soft b{color:var(--hero-ink);font-weight:600}
+.hero-warn{margin-top:var(--sp4);display:flex;align-items:center;gap:9px;
+  background:color-mix(in srgb,var(--warn) 20%,transparent);
+  border:1px solid color-mix(in srgb,var(--warn) 45%,transparent);
+  padding:10px 14px;border-radius:var(--r2);font-size:var(--fs-sm);color:var(--hero-warn-ink)}
+.hero-warn svg{flex:none;width:16px;height:16px;color:var(--warn)}
+
+/* ---------- ASSINATURA: a régua do teto ---------- */
+.rail{margin-top:var(--sp6);padding-top:var(--sp5);border-top:1px solid var(--hero-line)}
+.rail-head{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp3);margin-bottom:var(--sp3)}
+.rail-k{font-size:var(--fs-micro);font-weight:700;letter-spacing:var(--ls-cap);text-transform:uppercase;color:var(--hero-dim)}
+.rail-v{font-size:var(--fs-md);font-weight:700;color:var(--hero-ink)}
+/* nada aqui anima width/left: o preenchimento usa clip-path e os marcadores usam
+   translateX em px (a régua é medida no JS), então o layout nunca é recalculado. */
+.rail-track{position:relative;height:14px;border-radius:var(--rp);overflow:hidden;background:var(--hero-track);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.35)}
+.rail-fill,.rail-abate{position:absolute;inset:0;transition:clip-path .85s cubic-bezier(.22,1,.36,1)}
+.rail-fill{background:linear-gradient(90deg,var(--rail-a),var(--rail-b));
+  clip-path:inset(0 calc(100% - var(--f,0%)) 0 0)}
+.rail-abate{opacity:.9;background:repeating-linear-gradient(115deg,var(--warn) 0 4px,transparent 4px 8px);
+  clip-path:inset(0 calc(100% - var(--ae,0%)) 0 var(--as,0%))}
+.rail-mk{position:absolute;top:-5px;bottom:-5px;left:0;width:2px;border-radius:2px;background:var(--hero-ink);opacity:.45;
+  transform:translateX(var(--x,0px));transition:transform .85s cubic-bezier(.22,1,.36,1)}
+.rail-mk.wall{width:3px;opacity:1;background:var(--warn)}
+.rail-legend{display:flex;flex-wrap:wrap;gap:var(--sp2) var(--sp5);margin-top:var(--sp3);font-size:var(--fs-micro);color:var(--hero-dim)}
+.rail-legend span{display:inline-flex;align-items:center;gap:6px}
+.rail-legend i{width:10px;height:10px;border-radius:3px;display:inline-block;font-style:normal;flex:none}
+.rl-fill{background:linear-gradient(90deg,var(--rail-a),var(--rail-b))}
+.rl-wall{background:var(--warn)}
+/* mesmo tom e mesma opacidade do marcador .rail-mk que este swatch rotula */
+.rl-rgps{background:var(--hero-ink);opacity:.45}
+.rail-legend b{color:var(--hero-ink);font-family:var(--f-num);font-weight:600}
+
+/* ---------- kpi ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:var(--sp3)}
+.kpi{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:var(--r2);
+  padding:var(--sp4);box-shadow:var(--shadow);
+  transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s,border-color .22s}
+.kpi::before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:var(--tone-v)}
+.kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);
+  border-color:color-mix(in srgb,var(--tone-v) 45%,var(--line))}
+.kpi-t{font-size:var(--fs-micro);font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.05em}
+.kpi-v{font-size:var(--fs-2xl);font-weight:700;margin-top:6px;color:var(--tone);letter-spacing:-.02em}
+.kpi-s{font-size:var(--fs-cap);color:var(--muted);margin-top:3px;line-height:1.35}
+
+/* ---------- genéricos ---------- */
+.sec-title{font-family:var(--f-display);font-size:var(--fs-lg);font-weight:700;color:var(--ink);letter-spacing:-.02em}
+.sec-sub{font-size:var(--fs-cap);color:var(--faint);margin-top:3px;line-height:1.45}
+.pane-title{font-family:var(--f-display);font-size:var(--fs-3xl);font-weight:700;letter-spacing:-.03em;line-height:1.15}
+.detail-rows{display:flex;flex-direction:column;margin-top:var(--sp2)}
+.drow{display:flex;justify-content:space-between;align-items:center;gap:var(--sp3);padding:9px 8px;margin:0 -8px;
+  border-bottom:1px solid var(--line-soft);border-radius:8px;transition:background .14s}
+.drow:last-child{border-bottom:none}
+.drow:hover{background:var(--surface-2)}
+.drow-l{font-size:var(--fs-sm);color:var(--tone);font-weight:600}
+.drow-v{font-size:var(--fs-md);color:var(--tone);font-weight:600}
+.drow.is-total{margin-top:6px;padding-top:13px;border-top:1.5px solid var(--line);border-bottom:none}
+.drow.is-total .drow-l{font-weight:700;font-size:var(--fs-md)}
+.drow.is-total .drow-v{font-weight:700;font-size:var(--fs-lg)}
+.futures{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:var(--sp3);margin-top:var(--sp4)}
+.future{border:1px solid var(--line);background:var(--surface-2);border-radius:var(--r2);padding:var(--sp4);
+  transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s,border-color .22s}
+.future:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--c-axis)}
+.future-w{font-size:var(--fs-micro);font-weight:700;text-transform:uppercase;letter-spacing:var(--ls-cap);color:var(--tone)}
+.future-c{font-size:var(--fs-cap);color:var(--faint);margin-top:3px}
+.future-v{font-size:var(--fs-2xl);font-weight:700;color:var(--ink);margin-top:12px;letter-spacing:-.02em}
+.future-d{font-size:var(--fs-sm);font-weight:600;margin-top:4px;color:var(--tone)}
+.legend{display:flex;gap:var(--sp2) var(--sp5);flex-wrap:wrap;font-size:var(--fs-cap);color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:14px;height:3px;border-radius:2px;display:inline-block;flex:none;background:var(--tone-v)}
+.swatch.box{width:11px;height:11px;border-radius:3px}
+.swatch.dash{height:0;background:none;border-top:2px dashed var(--tone-v)}
+.t-nominal{--tone-v:var(--c-nominal)}
+.t-prev{--tone-v:var(--c-prev)}
+
+/* nota didática: acento por ícone e superfície, sem faixa lateral */
+.explain{margin-top:var(--sp4);background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--r2);
+  padding:13px 15px;font-size:var(--fs-sm);color:var(--muted);line-height:1.55}
+.explain b{color:var(--ink);font-weight:600}
+.explain .h{display:flex;align-items:center;gap:7px;font-weight:700;color:var(--ink);margin-bottom:5px;
+  font-size:var(--fs-micro);text-transform:uppercase;letter-spacing:var(--ls-cap)}
+.explain .h svg{width:14px;height:14px;color:var(--brand);flex:none}
+
+/* gráficos */
+.chart{position:relative;width:100%;margin-top:var(--sp3)}
+.chart-svg svg{width:100%;height:auto;display:block;overflow:visible}
+.chart-guide{position:absolute;top:0;bottom:26px;width:1px;background:var(--c-conn);pointer-events:none;z-index:2}
+.chart-tip{position:absolute;z-index:5;background:var(--c-tip-bg);color:var(--c-tip-ink);border-radius:var(--r2);
+  padding:9px 11px;font-size:var(--fs-cap);pointer-events:none;box-shadow:var(--shadow-lg);min-width:135px;
+  border:1px solid color-mix(in srgb,var(--c-tip-ink) 14%,transparent)}
+.chart-tip .tip-x{font-weight:700;margin-bottom:5px;color:var(--c-tip-key);font-size:var(--fs-micro);
+  text-transform:uppercase;letter-spacing:var(--ls-cap)}
+.chart-tip .tip-row{display:flex;align-items:center;gap:6px;white-space:nowrap;line-height:1.7}
+.chart-tip .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.chart-tip b{font-family:var(--f-num);margin-left:auto;padding-left:12px}
+.chart-dot{position:absolute;width:9px;height:9px;border-radius:50%;margin:-4.5px 0 0 -4.5px;pointer-events:none;
+  border:2px solid var(--surface);z-index:3}
+
+/* cartões de destaque */
+.hl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--sp3)}
+.hl{border-radius:var(--r2);padding:var(--sp4);border:1px solid color-mix(in srgb,var(--tone-v) 32%,transparent);
+  background:color-mix(in srgb,var(--tone-v) 9%,var(--surface));
+  transition:transform .22s cubic-bezier(.22,1,.36,1)}
+.hl:hover{transform:translateY(-2px)}
+.hl-t{font-size:var(--fs-micro);font-weight:700;text-transform:uppercase;letter-spacing:var(--ls-cap);color:var(--tone)}
+.hl-v{font-size:var(--fs-2xl);font-weight:700;margin-top:6px;color:var(--tone);letter-spacing:-.02em}
+
+.adesao-cmp{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp3)}
+
+/* tutorial */
+.tut-hero{background:linear-gradient(135deg,var(--hero-1) 0%,var(--hero-2) 55%,var(--hero-3) 100%);border-radius:var(--r4);
+  padding:var(--sp6) var(--sp7);color:var(--hero-ink);position:relative;overflow:hidden}
+.tut-hero::before{content:"";position:absolute;right:-60px;top:-110px;width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,var(--hero-glow),transparent 70%)}
+.tut-hero>*{position:relative;z-index:1}
+.steps{display:flex;flex-direction:column;gap:var(--sp4)}
+.step{display:flex;gap:var(--sp3)}
+.step .n{flex:none;width:30px;height:30px;border-radius:9px;background:var(--brand-soft);color:var(--brand-ink);
+  display:grid;place-items:center;font-family:var(--f-num);font-size:var(--fs-sm);font-weight:700}
+.step .t{font-size:var(--fs-md);font-weight:700;color:var(--ink)}
+.step .d{font-size:var(--fs-sm);color:var(--muted);line-height:1.55;margin-top:2px}
+.glos>div{margin-bottom:var(--sp3)}
+.glos .gt{font-size:var(--fs-sm);font-weight:700;color:var(--brand-ink)}
+.glos .gd{font-size:var(--fs-sm);color:var(--muted);line-height:1.5}
+.chartguide-card>div{padding:var(--sp3) 0;border-top:1px solid var(--line-soft)}
+.chartguide-card>div:first-child{border-top:none;padding-top:0}
+.chartguide-card .cgt{font-size:var(--fs-sm);font-weight:700;color:var(--brand-ink)}
+.chartguide-card .cgd{font-size:var(--fs-sm);color:var(--muted);line-height:1.5;margin-top:2px}
+
+/* autoria / rodapé */
+.author{background:linear-gradient(135deg,var(--hero-1) 0%,var(--hero-2) 55%,var(--hero-3) 100%);color:var(--hero-ink);border-radius:var(--r4);
+  padding:var(--sp5) var(--sp6);display:flex;align-items:center;justify-content:space-between;gap:var(--sp4);
+  flex-wrap:wrap;margin:var(--sp2) 0 var(--sp6);position:relative;overflow:hidden}
+.author::before{content:"";position:absolute;right:-40px;top:-90px;width:270px;height:270px;border-radius:50%;
+  background:radial-gradient(circle,var(--hero-glow2),transparent 70%)}
+.author>*{position:relative;z-index:1}
+.author .ttl{font-size:var(--fs-micro);letter-spacing:var(--ls-cap);text-transform:uppercase;color:var(--hero-dim);font-weight:700}
+.author .name{font-family:var(--f-display);font-size:var(--fs-2xl);font-weight:700;letter-spacing:-.02em;margin-top:3px}
+.author a.ig{display:inline-flex;align-items:center;gap:9px;background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22);color:#fff;text-decoration:none;padding:11px 17px;border-radius:var(--r2);
+  font-weight:700;font-size:var(--fs-md);transition:background .18s,transform .12s}
+.author a.ig:hover{background:rgba(255,255,255,.22);transform:translateY(-1px)}
+.author a.ig svg{width:17px;height:17px;flex:none}
+footer.disc{border-top:1px solid var(--line);background:var(--surface);padding:var(--sp5) 0}
+footer.disc p{margin:0;font-size:var(--fs-cap);color:var(--faint);line-height:1.6}
+/* O aviso legal é a superfície que o usuário de fato lê: separado, e com a tinta um passo
+   mais forte que a das premissas — não é rodapé decorativo, é a negativa de vínculo. */
+footer.disc p+p{margin-top:var(--sp4);padding-top:var(--sp4);border-top:1px solid var(--line);color:var(--muted)}
+footer.disc a{color:var(--brand-ink);text-decoration:underline;text-underline-offset:2px}
+
+/* drawer de variáveis globais */
+.drawer-mask{position:fixed;inset:0;z-index:60;display:flex;justify-content:flex-end}
+.drawer-bg{position:absolute;inset:0;background:rgba(8,16,28,.5);backdrop-filter:blur(3px);animation:fadeIn .22s ease both}
+.drawer{position:relative;width:430px;max-width:93vw;height:100%;background:var(--surface);border-left:1px solid var(--line);
+  box-shadow:var(--shadow-lg);overflow:auto;padding:var(--sp6);animation:slideIn .3s cubic-bezier(.22,1,.36,1) both}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes slideIn{from{transform:translateX(28px);opacity:0}}
+.drawer h3{margin:0;font-family:var(--f-display);font-size:var(--fs-xl);font-weight:700;letter-spacing:-.02em}
+.gclose{background:var(--surface-2);border:1px solid var(--line);width:34px;height:34px;border-radius:10px;
+  font-size:15px;color:var(--muted);cursor:pointer;line-height:1}
+.gclose:hover{background:var(--surface-3);color:var(--ink)}
+.gfield{margin-bottom:var(--sp3)}
+.gfield .gl{display:flex;justify-content:space-between;align-items:baseline;gap:var(--sp2);margin-bottom:6px}
+.gfield label{font-size:var(--fs-sm);font-weight:600;color:var(--muted)}
+.gfield .gh{font-size:var(--fs-micro);color:var(--faint);font-family:var(--f-num)}
+.btn-block{width:100%;background:var(--ink);border:none;color:var(--surface);padding:13px;border-radius:var(--r2);
+  font-size:var(--fs-md);font-weight:700;cursor:pointer;margin-top:var(--sp4);transition:background .16s,color .16s}
+.btn-block:hover{background:var(--brand);color:var(--on-brand)}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--c-tip-bg);
+  color:var(--c-tip-ink);padding:13px 20px;border-radius:var(--r2);font-size:var(--fs-md);font-weight:600;
+  box-shadow:var(--shadow-lg);z-index:80;opacity:0;transition:opacity .24s,transform .24s;pointer-events:none;
+  border:1px solid color-mix(in srgb,var(--c-tip-ink) 14%,transparent)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
+.tabpane{display:none}
+.tabpane.on{display:block;animation:paneIn .4s cubic-bezier(.22,1,.36,1) both}
+@keyframes paneIn{from{opacity:0;transform:translateY(8px)}}
+
+/* o acordeão do painel só existe abaixo de 980px; no desktop o painel é sempre aberto */
+.panel-toggle{display:none}
+.panel-toggle svg{width:16px;height:16px;flex:none}
+
+/* ---------- entrada dos gráficos (SVG) ---------- */
+/* scaleX, não width: mesma técnica das barras horizontais logo abaixo — a revelação
+   corre no compositor em vez de recalcular a geometria do SVG a cada quadro. */
+.chart-svg svg.enter .rv{transform-box:fill-box;transform-origin:0 50%;
+  animation:wipe .9s cubic-bezier(.2,.85,.25,1) both}
+@keyframes wipe{from{transform:scaleX(0)}}
+.chart-svg svg.enter .bar{transform-box:fill-box;transform-origin:50% 100%;
+  animation:growY .55s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0)*40ms)}
+.chart-svg svg.enter .bar.dn{transform-origin:50% 0}
+.chart-svg svg.enter .bar.hz{transform-origin:0 50%;animation-name:growX}
+@keyframes growY{from{transform:scaleY(0)}}
+@keyframes growX{from{transform:scaleX(0)}}
+.chart-svg svg.enter .lb{transform-box:fill-box;animation:fadeUp .5s ease both;
+  animation-delay:calc(var(--i,0)*40ms + 150ms)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}}
+.chart-svg svg.enter .cn{animation:fadeIn .6s ease both;animation-delay:.32s}
+.rise{animation:rise .5s cubic-bezier(.22,1,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+
+/* ---------- responsivo ---------- */
+@media(max-width:1080px){
+  .grid-wf{grid-template-columns:1fr}
+}
+@media(max-width:980px){
+  .cols{grid-template-columns:1fr;gap:var(--sp4);padding:var(--sp4) 0}
+  .panel{position:static;max-height:none;overflow:visible;padding:var(--sp3);background:transparent;border:none;box-shadow:none}
+  .grid2{grid-template-columns:1fr}
+  .hero{padding:var(--sp5)}
+  .panel h4{display:none}
+  /* o painel vira acordeão: alvo de 52px, resumo do cenário no próprio botão */
+  .panel-toggle{display:flex;align-items:center;gap:var(--sp3);width:100%;text-align:left;border:none;cursor:pointer;
+    background:linear-gradient(135deg,var(--hero-1) 0%,var(--hero-2) 55%,var(--hero-3) 100%);color:var(--hero-ink);
+    padding:15px 16px;border-radius:var(--r2);font-size:var(--fs-md);font-weight:700;box-shadow:var(--shadow)}
+  .panel-toggle .pt-ic{width:17px;height:17px;flex:none;color:var(--brand-2)}
+  .panel-toggle .pt-tag{margin-left:auto;font-size:var(--fs-cap);font-weight:600;color:var(--hero-dim);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44%}
+  .panel-toggle .pt-caret{flex:none;width:14px;height:14px;transition:transform .28s cubic-bezier(.22,1,.36,1)}
+  .panel.open .panel-toggle .pt-caret{transform:rotate(180deg)}
+  .panel-body{display:none}
+  .panel.open .panel-body{display:block;margin-top:var(--sp3);padding:var(--sp4);background:var(--surface);
+    border:1px solid var(--line);border-radius:var(--r3);box-shadow:var(--shadow);animation:rise .3s ease both}
+}
+@media(max-width:760px){
+  .wrap{padding:0 var(--sp4)}
+  /* título ocupa a linha 1 inteira; as ações caem para a linha 2, à direita */
+  .hbar{gap:var(--sp3) var(--sp2);padding:10px 0;flex-wrap:wrap}
+  .htitle{font-size:var(--fs-lg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hbar .hspacer{display:none}
+  .hactions{width:100%;justify-content:flex-end}
+  .hbtn .lbl{display:none}
+  .hbtn{padding:10px;width:40px;justify-content:center}
+  .hbtn.primary{width:auto;padding:10px 14px}
+  .hbtn.primary .lbl{display:inline}
+  .preset-label,.scenario-tag{display:none}
+  .presetrow{gap:var(--sp2)}
+  /* a faixa de cenários rola: a máscara mostra que há mais à direita */
+  .preset-scroll{scroll-snap-type:x mandatory;
+    mask-image:linear-gradient(90deg,#000 88%,transparent);
+    -webkit-mask-image:linear-gradient(90deg,#000 88%,transparent)}
+  .preset-scroll .preset{scroll-snap-align:start}
+  .tabrow{gap:0}
+  .tab{flex:1;padding:12px 8px;font-size:var(--fs-sm)}
+  .tab::after{left:8px;right:8px}
+  .t-full{display:none}
+  .t-abbr{display:inline}
+  .pad{padding:var(--sp4)}
+  .adesao-cmp{grid-template-columns:1fr}
+  .author{flex-direction:column;align-items:flex-start}
+  .author a.ig{width:100%;justify-content:center}
+  .hero-top{gap:var(--sp3)}
+  .hero-aside{align-items:flex-start;text-align:left;flex-direction:row;flex-wrap:wrap;gap:var(--sp1) var(--sp4)}
+  /* são 5 KPIs em 2 colunas: sem isto o último fica órfão em meia largura */
+  .kpis{grid-template-columns:1fr 1fr}
+  .kpis .kpi:last-child:nth-child(odd){grid-column:1 / -1}
+  .kpi-v{font-size:var(--fs-xl)}
+  .drawer{width:100%;max-width:100%;padding:var(--sp5)}
+  .pane-title{font-size:var(--fs-2xl)}
+  .rail-legend{gap:var(--sp1) var(--sp3)}
+  /* alvos de toque confortáveis */
+  .sw{width:52px;height:30px}
+  .sw .knob{width:24px;height:24px}
+  .sw.on .knob{transform:translateX(22px)}
+  .seg button{padding:12px 6px}
+  input[type=range]{height:8px;margin:14px 0 6px}
+  input[type=range]::-webkit-slider-thumb{width:26px;height:26px}
+}
+@media(max-width:420px){
+  .futures{grid-template-columns:1fr}
+  .kpi{padding:var(--sp3)}
+  .kpi-v{font-size:var(--fs-lg)}
+}
+
+/* ---------- impressão: papel branco mesmo com o dark ligado ---------- */
+@media print{
+  /* precisa redefinir TAMBÉM os tons semânticos: sem isso o --brand-ink do dark
+     (verde claro) viraria texto lavado sobre papel branco. */
+  :root,:root[data-theme="dark"],:root[data-theme="light"]{
+    color-scheme:light;
+    --bg:#fff; --bg-2:#fff; --surface:#fff; --surface-2:#fff; --surface-3:#eef2f8;
+    --line:#d3dbe6; --line-soft:#e5eaf2;
+    --ink:#0F1B2D; --muted:#41526a; --faint:#5f7089;
+    --brand:#0E7A4E; --brand-2:#15935F; --brand-ink:#0A5F3D; --brand-deep:#0A2E57; --brand-soft:#E6F5ED;
+    --on-brand:#FFFFFF;
+    --pos:#0E7A4E; --pos-2:#3FAE7D; --pos-ink:#0A5F3D;
+    --neg:#D2453A; --neg-ink:#B0342A;
+    --warn:#C97A16; --warn-ink:#92590F;
+    --c-grid:#E5EAF2; --c-axis:#D3DBE6; --c-conn:#C5CEDB;
+    --c-off:#C7D2DE; --c-alt:#7FB3DA; --c-prev:#3B82C4; --c-nominal:#5A93CE; --c-bruto:#1769C4;
+    --hero-1:#fff; --hero-2:#fff; --hero-3:#fff; --hero-ink:#0F1B2D; --hero-dim:#5f7089;
+    --hero-glow:transparent; --hero-glow2:transparent; --hero-line:#d3dbe6; --hero-track:#e5eaf2;
+    --hero-warn-ink:#92590F; --rail-a:#1769C4; --rail-b:#0E7A4E;
+    --shadow:none; --shadow-md:none; --shadow-lg:none;
+  }
+  header,.no-print,.panel,.preset,.tabs,.author a.ig,.drawer-mask,.toast{display:none!important}
+  body{background:#fff}
+  .cols{grid-template-columns:1fr;padding:0}
+  .tabpane{display:block!important;animation:none}
+  .hero,.author,.tut-hero{background:#fff!important;color:#0F1B2D!important;border:1px solid #d3dbe6}
+  .card,.kpi,.future{box-shadow:none;break-inside:avoid}
+}
+@media(prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <div class="wrap">
+      <div class="hbar">
+        <div class="logo" aria-hidden="true">
+          <!-- a marca é a própria régua: degraus que sobem e batem no teto -->
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="15" width="4" height="6" rx="1.2" fill="currentColor" opacity=".55"/><rect x="8" y="10" width="4" height="11" rx="1.2" fill="currentColor" opacity=".8"/><rect x="14" y="6" width="4" height="15" rx="1.2" fill="currentColor"/><path d="M21 3v18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div style="min-width:0">
+          <div class="htitle">Calculadora de Remuneração</div>
+          <div class="hsub">Auditor Fiscal · SEFAZ-RJ · base 2026</div>
+        </div>
+        <div class="hspacer"></div>
+        <div class="hactions no-print">
+          <button class="hbtn only-ic" data-act="theme" aria-label="Alternar tema claro e escuro" title="Alternar tema">
+            <svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+            <svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          </button>
+          <button class="hbtn" data-act="openGlobals">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+            <span class="lbl">Variáveis globais</span>
+          </button>
+          <button class="hbtn" data-act="share" id="shareBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3A5 5 0 0 0 13.4 3.4l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/></svg>
+            <span class="lbl">Compartilhar</span>
+          </button>
+          <button class="hbtn primary" data-act="pdf">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 21h16"/></svg>
+            <span class="lbl">Exportar PDF</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="presetbar no-print">
+      <div class="wrap">
+        <div class="presetrow">
+          <span class="preset-label">Cenários padrão</span>
+          <div class="preset-scroll">
+            <button class="preset" data-preset="1"><span class="pn">1</span>Base, sem reajuste</button>
+            <button class="preset" data-preset="2"><span class="pn">2</span>Sem reajuste + triênios</button>
+            <button class="preset" data-preset="3"><span class="pn">3</span>Reajuste 11,56%</button>
+            <button class="preset" data-preset="4"><span class="pn">4</span>Reajuste + triênios</button>
+          </div>
+          <div class="hspacer"></div>
+          <span class="scenario-tag" id="scenarioTag">Cenário personalizado</span>
+          <button class="preset" data-act="reset">↺ Resetar</button>
+        </div>
+      </div>
+    </div>
+    <div class="tabs">
+      <div class="wrap">
+        <div class="tabrow" role="tablist">
+          <button class="tab on" data-tab="calc" role="tab" aria-selected="true"><span class="t-full">Calculadora</span><span class="t-abbr">Cálculo</span></button>
+          <button class="tab" data-tab="proj" role="tab" aria-selected="false"><span class="t-full">Projeção no tempo</span><span class="t-abbr">Projeção</span></button>
+          <button class="tab" data-tab="comp" role="tab" aria-selected="false"><span class="t-full">Comparações</span><span class="t-abbr">Comparar</span></button>
+          <button class="tab" data-tab="tut" role="tab" aria-selected="false"><span class="t-full">Como usar</span><span class="t-abbr">Guia</span></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+  <div class="wrap">
+  <div class="cols">
+
+    <!-- ============ PARAM PANEL ============ -->
+    <aside class="card panel afre-scroll no-print" id="panel">
+      <button class="panel-toggle no-print" data-act="togglePanel" aria-expanded="false" aria-controls="panelBody">
+        <svg class="pt-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+        <span>Parâmetros do seu caso</span>
+        <span class="pt-tag" id="panelTag"></span>
+        <svg class="pt-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="panel-body" id="panelBody">
+      <h4>Parâmetros do seu caso</h4>
+
+      <div class="field">
+        <label class="label">Classe na carreira</label>
+        <div class="seg" id="segClasse">
+          <button data-classe="3">3ª (entrada)</button>
+          <button data-classe="2">2ª</button>
+          <button data-classe="1">1ª (topo)</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <div style="min-width:0">
+            <div class="field-title">Reajuste de 11,56% (2026)</div>
+            <div class="field-desc">Prometido p/ 2º semestre. Incide no VB + produtividade.</div>
+          </div>
+          <button class="sw" data-toggle="reajuste" role="switch" aria-label="Reajuste 2026"><span class="knob"></span></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <div style="min-width:0">
+            <div class="field-title">Adesão à previdência complementar (RPC)</div>
+            <div class="field-desc">Aderir reduz o líquido de hoje (contribuição extra), mas forma um fundo com contrapartida do Estado.</div>
+          </div>
+          <button class="sw" data-toggle="rpc" role="switch" aria-label="Adesão ao RPC"><span class="knob"></span></button>
+        </div>
+        <div class="subpanel" id="sub-rpc">
+          <div class="row-between">
+            <span class="sub-k">Alíquota RJPrev</span>
+            <span class="num sub-v"><span id="aliqRPCval">8,5</span>%</span>
+          </div>
+          <input type="range" min="5.5" max="8.5" step="0.1" value="8.5" data-slider="aliqRPC" aria-label="Alíquota RJPrev">
+          <div class="range-ends"><span>5,5%</span><span>8,5%</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <div style="min-width:0">
+            <div class="field-title">Triênios / ADF (adicional por tempo)</div>
+            <div class="field-desc">1º triênio +10%, demais +5% — teto de 60%. Para o novo auditor, é o ADF (LC 230/2026).</div>
+          </div>
+          <button class="sw" data-toggle="tri" role="switch" aria-label="Triênios"><span class="knob"></span></button>
+        </div>
+        <div class="subpanel" id="sub-tri">
+          <label class="label" style="margin-bottom:7px">Tempo de serviço público anterior</label>
+          <div class="money" style="margin-bottom:11px">
+            <input type="number" min="0" max="40" step="1" value="0" data-num="priorYears" class="inp center" style="width:78px" aria-label="Anos de serviço anterior">
+            <span class="hint">anos</span>
+          </div>
+          <div class="sub-k" style="margin-bottom:7px">Esse tempo conta para triênios?</div>
+          <div class="seg" id="segConta">
+            <button data-conta="sim">Conta</button>
+            <button data-conta="nao">Não conta (zera)</button>
+          </div>
+          <div class="k-row">
+            <span>Triênios hoje: <b id="triHoje">0</b></span>
+            <span>Fator: <b id="triFator">1,00</b>×</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <div style="min-width:0">
+            <div class="field-title">PPE — Prêmio de Produtividade</div>
+            <div class="field-desc">Valor médio mensal.</div>
+          </div>
+          <button class="sw" data-toggle="ppe" role="switch" aria-label="PPE"><span class="knob"></span></button>
+        </div>
+        <div class="subpanel" id="sub-ppe">
+          <div class="money">
+            <span class="cur">R$</span>
+            <input type="number" min="0" step="1" value="5848.17" data-num="ppeValue" class="inp" aria-label="Valor da PPE">
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <div style="min-width:0">
+            <div class="field-title">Auxílio Moradia (barreira fiscal)</div>
+            <div class="field-desc">Só em lotação de barreira fiscal. Valor fixo de 1.500 UFIR-RJ.</div>
+          </div>
+          <button class="sw" data-toggle="moradia" role="switch" aria-label="Auxílio moradia"><span class="knob"></span></button>
+        </div>
+        <div class="subpanel" id="sub-moradia">
+          <div class="row-between">
+            <span class="sub-k">1.500 UFIR-RJ</span>
+            <span class="num sub-v" id="moradiaValTxt">R$ 0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head" style="margin-bottom:2px">
+          <div style="min-width:0">
+            <div class="field-title">Função de chefia / assessoramento / direção</div>
+            <div class="field-desc">Gratificação da Resolução SEFAZ 874/2026: % do teto (STF). Extra-teto, indenizatória, sem IR. Não acumulam entre si.</div>
+          </div>
+        </div>
+        <select class="inp" data-select="funcao" aria-label="Função gratificada" style="margin-top:11px">
+          <option value="">Nenhuma função</option>
+          <option value="I">Tipo I · Subsecretário / Adjunto — 30%</option>
+          <option value="II">Tipo II · Superintendente / Assessor-Chefe — 27%</option>
+          <option value="III">Tipo III · Chefe / Coordenador / Assessor — 23,5%</option>
+          <option value="IV">Tipo IV · Subchefe / demais chefias — 20%</option>
+        </select>
+        <div class="k-row hidden" id="funcaoInfo">
+          <span><b id="funcaoDescTxt">—</b> do teto STF</span>
+          <span>+<b id="funcaoValTxt">R$ 0</b>/mês</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head" style="margin-bottom:2px">
+          <div style="min-width:0">
+            <div class="field-title">Órgão de deliberação coletiva</div>
+            <div class="field-desc">Gratificação de presença por sessão realizada (Dec. 50.369/2026): 250 UFIR-RJ no Conselho de Contribuintes, até 14 sessões/mês; 100 UFIR-RJ na Junta de Revisão Fiscal, até 12. Indenizatória, sem IR, e acumulável com as demais vantagens (Estatuto, art. 171). Vedado participar de mais de um órgão (art. 170).</div>
+          </div>
+        </div>
+        <select class="inp" data-select="orgao" aria-label="Órgão de deliberação coletiva" style="margin-top:11px">
+          <option value="">Não participa</option>
+          <option value="CC">Conselho de Contribuintes / Rep. da Fazenda — 250 UFIR/sessão</option>
+          <option value="JRF">Junta de Revisão Fiscal — 100 UFIR/sessão</option>
+        </select>
+        <div class="subpanel" id="sub-colegiado">
+          <label class="label" style="margin-bottom:7px">Cargo no colegiado</label>
+          <select class="inp" data-select="cargoColegiado" aria-label="Cargo no colegiado"></select>
+          <div class="row-between" style="margin-top:14px">
+            <span class="sub-k">Sessões realizadas no mês</span>
+            <span class="num sub-v"><span id="sessoesVal">14</span></span>
+          </div>
+          <input type="range" min="0" max="14" step="1" value="14" data-slider="sessoes" aria-label="Sessões realizadas no mês">
+          <div class="range-ends"><span>0</span><span id="sessoesEnd">14 sessões (teto)</span></div>
+          <div class="k-row"><span><b id="colegCargoTxt">Membro</b><span id="colegAddTxt"></span></span><span>+<b id="colegReais">R$ 0</b>/mês</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <div style="min-width:0">
+            <div class="field-title">Auxílio-Saúde</div>
+            <div class="field-desc">Reembolso até 300 UFIR-RJ/mês, com comprovação de gasto. Global (independe de dependentes). Res. SEFAZ 895/2026.</div>
+          </div>
+          <button class="sw" data-toggle="saude" role="switch" aria-label="Auxílio-saúde"><span class="knob"></span></button>
+        </div>
+        <div class="subpanel" id="sub-saude">
+          <div class="row-between">
+            <span class="sub-k">Valor reembolsado</span>
+            <span class="num sub-v"><span id="saudeUfirVal">300</span> UFIR</span>
+          </div>
+          <input type="range" min="0" max="300" step="5" value="300" data-slider="saudeUfir" aria-label="Auxílio-saúde em UFIR">
+          <div class="range-ends"><span>0</span><span>300 UFIR (teto)</span></div>
+          <div class="k-row"><span>Conforme comprovação</span><span>≈ <b id="saudeReais">R$ 0</b>/mês</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head">
+          <div style="min-width:0">
+            <div class="field-title">Auxílio-Educação (por dependente)</div>
+            <div class="field-desc">Reembolso até 500 UFIR-RJ por dependente/mês (máx. 3), com comprovação de gasto. Res. SEFAZ 895/2026.</div>
+          </div>
+          <button class="sw" data-toggle="educacao" role="switch" aria-label="Auxílio-educação"><span class="knob"></span></button>
+        </div>
+        <div class="subpanel" id="sub-educ">
+          <label class="label" style="margin-bottom:7px">Dependentes (até 3)</label>
+          <div class="seg" id="segDeps">
+            <button data-deps="1">1</button>
+            <button data-deps="2">2</button>
+            <button data-deps="3">3</button>
+          </div>
+          <div class="row-between" style="margin-top:14px">
+            <span class="sub-k">Valor por dependente</span>
+            <span class="num sub-v"><span id="educUfirVal">500</span> UFIR</span>
+          </div>
+          <input type="range" min="0" max="500" step="10" value="500" data-slider="educUfir" aria-label="Auxílio-educação em UFIR por dependente">
+          <div class="range-ends"><span>0</span><span>500 UFIR/dep (teto)</span></div>
+          <div class="k-row"><span><b id="educDepsTxt">1</b> dependente(s)</span><span>≈ <b id="educReais">R$ 0</b>/mês</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-head" style="margin-bottom:10px">
+          <div class="field-title">Ajuda de custo — Alimentação</div>
+          <button class="sw" data-toggle="alim" role="switch" aria-label="Ajuda alimentação"><span class="knob"></span></button>
+        </div>
+        <div class="field-head">
+          <div class="field-title">Ajuda de custo — Transporte</div>
+          <button class="sw" data-toggle="transp" role="switch" aria-label="Ajuda transporte"><span class="knob"></span></button>
+        </div>
+      </div>
+
+      <div class="field">
+        <details>
+          <summary class="sub-k" style="cursor:pointer;color:var(--brand-ink)">Premissas avançadas do modelo</summary>
+          <div style="margin-top:10px">
+            <div class="field-head" style="margin-bottom:11px">
+              <div style="min-width:0">
+                <div class="field-title" style="font-size:12.5px">Triênio incide sobre a produtividade</div>
+                <div class="field-desc">Padrão = como na planilha. Desligue p/ incidir só no vencimento-base.</div>
+              </div>
+              <button class="sw" data-toggle="triEmProd" role="switch" aria-label="Triênio sobre produtividade"><span class="knob"></span></button>
+            </div>
+            <div class="field-head" style="margin-bottom:11px">
+              <div style="min-width:0">
+                <div class="field-title" style="font-size:12.5px">PPE tributada (entra na base de IR)</div>
+                <div class="field-desc">Padrão = desligado (igual à planilha, PPE líquida).</div>
+              </div>
+              <button class="sw" data-toggle="ppeTributada" role="switch" aria-label="PPE tributada"><span class="knob"></span></button>
+            </div>
+            <div class="field-head">
+              <div style="min-width:0">
+                <div class="field-title" style="font-size:12.5px">Sem adesão: RPPS sobre todo o bruto</div>
+                <div class="field-desc">Padrão = desligado. Pelo correto, o RPPS é limitado ao teto do RGPS mesmo sem aderir ao RPC. Ligue p/ reproduzir a planilha antiga (14% sobre tudo).</div>
+              </div>
+              <button class="sw" data-toggle="rppsFullSemAdesao" role="switch" aria-label="RPPS sobre todo o bruto sem adesão"><span class="knob"></span></button>
+            </div>
+          </div>
+        </details>
+      </div>
+      </div><!-- /panel-body -->
+    </aside>
+
+    <!-- ============ RESULTS ============ -->
+    <section class="results">
+
+      <!-- ===== TAB: CALCULADORA ===== -->
+      <div class="tabpane on" data-pane="calc">
+        <div class="results">
+          <!-- hero: o visor -->
+          <div class="hero">
+            <div class="hero-top">
+              <div style="min-width:0">
+                <div class="hero-label" id="heroLabel">Líquido mensal estimado</div>
+                <div class="num hero-big" id="heroBig">R$ 0,00</div>
+                <div class="hero-sub" id="heroSub">líquido por mês</div>
+              </div>
+              <div class="hero-aside">
+                <div class="chip-soft">Anual (×12): <b class="num" id="heroAnual">—</b></div>
+                <div class="chip-soft">≈ com 13º + ⅓ férias: <b class="num" id="heroAnual13">—</b></div>
+              </div>
+            </div>
+
+            <!-- ASSINATURA — a régua do teto: onde o seu bruto está entre os dois limites legais -->
+            <div class="rail">
+              <div class="rail-head">
+                <span class="rail-k">Bruto do cargo na régua dos tetos</span>
+                <span class="num rail-v" id="railBruto">—</span>
+              </div>
+              <div class="rail-track" id="railTrack">
+                <div class="rail-fill" id="railFill"></div>
+                <div class="rail-abate" id="railAbate"></div>
+                <div class="rail-mk" id="railRGPS"></div>
+                <div class="rail-mk wall" id="railSTF"></div>
+              </div>
+              <div class="rail-legend">
+                <span><i class="rl-fill"></i>Bruto efetivo</span>
+                <span><i class="rl-rgps"></i>Teto RGPS <b id="railRGPSv">—</b> · onde o RPPS para</span>
+                <span><i class="rl-wall"></i>Teto STF <b id="railSTFv">—</b> · onde o abate começa</span>
+              </div>
+            </div>
+
+            <div class="hero-warn hidden" id="heroWarn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+              <span id="heroWarnTxt"></span>
+            </div>
+          </div>
+
+          <!-- KPIs -->
+          <div class="kpis" id="kpis"></div>
+
+          <!-- waterfall + detalhamento -->
+          <div class="grid-wf">
+            <div class="card pad">
+              <div class="sec-title">Do bruto ao líquido</div>
+              <div class="sec-sub">Cada linha do contracheque, em R$. Passe o mouse para os detalhes.</div>
+              <div class="chart" id="chartWaterfall"></div>
+              <div class="explain">
+                <div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Como ler</div>
+                A primeira barra é o <b>bruto</b>. As barras <b>vermelhas</b> puxam para a esquerda (previdência e IR retiram). As <b>verdes</b> empurram para a direita (ajudas de custo, PPE e auxílios acrescentam). A última é o <b>líquido</b> que cai na conta.
+              </div>
+            </div>
+            <div class="card pad">
+              <div class="sec-title">Detalhamento</div>
+              <div class="sec-sub">Linha a linha, como na folha.</div>
+              <div class="detail-rows" id="detailRows"></div>
+            </div>
+          </div>
+
+          <!-- visão do futuro -->
+          <div class="card pad">
+            <div class="row-between" style="align-items:baseline;flex-wrap:wrap">
+              <div class="sec-title">Visão do futuro · progressão de classe</div>
+              <div class="sec-sub">mesmos parâmetros · classe sobe a cada 3 anos</div>
+            </div>
+            <div class="futures" id="futures"></div>
+            <div class="explain">
+              <div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Como ler</div>
+              Cada cartão projeta seu líquido mantendo os parâmetros atuais. Em <b>3 anos</b> você sobe para a 2ª classe e em <b>6 anos</b> para a 1ª (topo). O valor destacado mostra quanto a mais, ou a menos, você ganharia por mês.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TAB: PROJEÇÃO ===== -->
+      <div class="tabpane" data-pane="proj">
+        <div class="results">
+          <div class="row-between" style="flex-wrap:wrap;gap:16px;align-items:flex-end">
+            <div>
+              <div class="pane-title">Projeção ao longo da carreira</div>
+              <div class="sec-sub">Usa os parâmetros da aba Calculadora. Classe progride a cada 3 anos; triênios acumulam.</div>
+            </div>
+            <div class="card no-print" style="display:flex;align-items:center;gap:12px;padding:8px 16px">
+              <span class="sub-k">Horizonte</span>
+              <input type="range" min="5" max="35" step="1" value="35" data-slider="horizonte" style="width:130px" aria-label="Horizonte da projeção">
+              <span class="num sub-v" style="white-space:nowrap"><span id="horizonteVal">35</span> anos</span>
+            </div>
+          </div>
+
+          <div class="card pad">
+            <div class="sec-title">Ponto de saturação da remuneração</div>
+            <div class="legend" style="margin-top:8px">
+              <span><span class="swatch t-bruto"></span>Bruto efetivo</span>
+              <span><span class="swatch dash t-nominal"></span>Bruto nominal</span>
+              <span><span class="swatch t-pos"></span>Líquido</span>
+              <span><span class="swatch dash t-warn"></span>Teto STF</span>
+            </div>
+            <div class="chart" id="chartProj"></div>
+            <div class="explain">
+              <div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Como ler</div>
+              <span id="satNota"></span> A linha <b>tracejada</b> é o bruto "de direito"; a <b>cheia</b> é o que realmente entra após o abate-teto. Quando elas se separam, você atingiu o <b>teto do STF</b>: ganhos extras (triênios) param de aumentar o líquido.
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="card pad">
+              <div class="sec-title">Deduções ao longo do tempo</div>
+              <div class="legend" style="margin-top:8px"><span><span class="swatch box t-prev"></span>Previdência</span><span><span class="swatch box t-neg"></span>IRPF</span></div>
+              <div class="chart" id="chartDed"></div>
+              <div class="explain"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Como ler</div>A área empilhada mostra quanto sai por mês em previdência e Imposto de Renda. Conforme o salário sobe, o IR cresce mais rápido: é a progressividade da tabela.</div>
+            </div>
+            <div class="card pad">
+              <div class="sec-title">Ganho acumulado com triênios</div>
+              <div class="sec-sub">Quanto os triênios já somaram ao líquido, mês a mês.</div>
+              <div class="chart" id="chartTri"></div>
+              <div class="stat">Em <b id="triHorizonte">35</b> anos: <strong class="num sub-v" id="triAcum">R$ 0</strong></div>
+              <div class="explain"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Como ler</div>A curva soma todo o dinheiro extra que os triênios colocaram no seu bolso até cada ano. Se ela achata, é porque você bateu o teto de 60%, ou o teto do STF.</div>
+            </div>
+          </div>
+
+          <div class="card pad">
+            <div class="sec-title">Patrimônio de carreira · líquido acumulado</div>
+            <div class="sec-sub">Soma de tudo que você recebe líquido ao longo dos anos, sem considerar juros.</div>
+            <div class="chart" id="chartPat"></div>
+            <div class="stat">Total em <b id="patHorizonte">35</b> anos: <strong class="num sub-v" id="patTotal">R$ 0</strong></div>
+            <div class="explain"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Como ler</div>É o total de caixa que passa pela sua conta ao longo da carreira (líquido × 12, somado ano a ano). Útil para dimensionar o tamanho da decisão: pequenas diferenças mensais viram fortunas no acumulado.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TAB: COMPARAÇÕES ===== -->
+      <div class="tabpane" data-pane="comp">
+        <div class="results">
+          <div class="card pad">
+            <div class="pane-title">Aderir ao RPC × investir por conta própria</div>
+            <div class="sec-sub" style="max-width:760px">A adesão ao RPC recebe contrapartida do Estado: cada real seu vira mais de um. Investindo sozinho você fica só com a sua parte. Veja o patrimônio acumulado nos dois caminhos.</div>
+
+            <div class="no-print" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:20px 0 8px">
+              <div class="subpanel" style="margin:0">
+                <div class="row-between"><span class="sub-k">Rendimento do fundo RPC</span><span class="num sub-v"><span id="taxaRPCval">8</span>% a.a.</span></div>
+                <input type="range" min="2" max="15" step="0.5" value="8" data-slider="taxaRPC" aria-label="Taxa do fundo RPC">
+              </div>
+              <div class="subpanel" style="margin:0">
+                <div class="row-between"><span class="sub-k">Seu investimento próprio</span><span class="num sub-v" style="color:var(--brand-ink)"><span id="taxaPropval">8</span>% a.a.</span></div>
+                <input type="range" min="2" max="15" step="0.5" value="8" data-slider="taxaPropria" aria-label="Taxa do investimento próprio">
+              </div>
+              <div class="subpanel" style="margin:0">
+                <div class="row-between"><span class="sub-k">Contrapartida do Estado</span><span class="num sub-v"><span id="matchval">100</span>%</span></div>
+                <input type="range" min="0" max="100" step="5" value="100" data-slider="match" aria-label="Contrapartida do Estado">
+              </div>
+            </div>
+
+            <div class="legend">
+              <span><span class="swatch t-pos"></span>Aderindo ao RPC (com contrapartida)</span>
+              <span><span class="swatch dash t-bruto"></span>Por conta própria (sem contrapartida)</span>
+            </div>
+            <div class="chart" id="chartRpc"></div>
+
+            <div class="hl-grid" style="margin-top:20px">
+              <div class="hl t-pos"><div class="hl-t">RPC em <span id="hcLabel">35</span> anos</div><div class="num hl-v" id="rpcFinal">—</div></div>
+              <div class="hl t-bruto"><div class="hl-t">Conta própria</div><div class="num hl-v" id="propFinal">—</div></div>
+              <div class="hl t-warn"><div class="hl-t">Taxa própria p/ empatar</div><div class="num hl-v" id="breakeven">—</div></div>
+            </div>
+            <div class="explain"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Como ler</div><span id="rpcConclusao"></span></div>
+
+            <div class="no-print" style="display:flex;align-items:center;gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line-soft);flex-wrap:wrap">
+              <span class="sub-k">Horizonte da simulação</span>
+              <input type="range" min="5" max="35" step="1" value="35" data-slider="horizonteC" style="width:160px" aria-label="Horizonte da simulação RPC">
+              <span class="num sub-v" style="white-space:nowrap"><span id="horizonteCval">35</span> anos</span>
+              <span style="flex:1"></span>
+              <span style="display:flex;align-items:center;gap:10px">
+                <button class="sw" data-toggle="contribCresce" role="switch" aria-label="Contribuição cresce com a carreira"><span class="knob"></span></button>
+                <span class="sub-k">Contribuição cresce com a carreira</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="card pad">
+              <div class="sec-title">Líquido mensal: adesão × não adesão</div>
+              <div class="sec-sub" style="margin-bottom:14px">O RPPS de 14% para no teto do RGPS nos dois casos. Aderir acrescenta a contribuição complementar.</div>
+              <div class="adesao-cmp">
+                <div class="hl t-pos"><div class="hl-t">Aderindo ao RPC</div><div class="num hl-v" id="liqAd">—</div></div>
+                <div class="hl t-bruto"><div class="hl-t">Sem aderir</div><div class="num hl-v" id="liqNo">—</div></div>
+              </div>
+              <div class="stat">Custo mensal da adesão no líquido de hoje: <strong class="num" style="color:var(--warn-ink)" id="diffAd">—</strong></div>
+              <div class="explain"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Como ler</div>Sem aderir você leva <b>mais para casa agora</b>, mas não forma reserva. Aderindo, o valor da contribuição, somado à contrapartida do Estado, deixa de ser take-home e vira <b>fundo de previdência só seu</b>.</div>
+            </div>
+            <div class="card pad">
+              <div class="sec-title">Líquido por classe</div>
+              <div class="sec-sub">Com seus parâmetros atuais, em cada classe.</div>
+              <div class="chart" id="chartClasse"></div>
+              <div class="explain"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Como ler</div>Mostra o salto de líquido a cada progressão de classe. A barra em destaque é a sua classe atual.</div>
+            </div>
+          </div>
+
+          <div class="card pad">
+            <div class="sec-title">Impacto marginal de cada parâmetro</div>
+            <div class="sec-sub">Quanto cada item adiciona, ou retira, do seu líquido mensal hoje.</div>
+            <div class="chart" id="chartMarginal"></div>
+            <div class="explain"><div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg> Como ler</div>Cada barra é o efeito isolado de um parâmetro no seu líquido mensal. As verdes acrescentam; as vermelhas retiram. O <b>RPC</b> aparece negativo porque a contribuição reduz o take-home de hoje, mas vira fundo. Itens em cinza estão desligados.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TAB: TUTORIAL ===== -->
+      <div class="tabpane" data-pane="tut">
+        <div style="max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:20px">
+          <div class="tut-hero">
+            <div class="pane-title">Como usar a calculadora</div>
+            <div style="font-size:var(--fs-md);color:var(--hero-dim);margin-top:8px;line-height:1.6;max-width:640px">Uma ferramenta de apoio à decisão para o novo Auditor Fiscal da SEFAZ-RJ. Comece por um cenário padrão e personalize para o seu caso. Nada aqui substitui o contracheque oficial: é uma estimativa com base nos parâmetros vigentes de 2026.</div>
+          </div>
+
+          <div class="card pad">
+            <div class="sec-title" style="margin-bottom:16px">Passo a passo</div>
+            <div class="steps" id="tutSteps"></div>
+          </div>
+
+          <div class="card pad">
+            <div class="sec-title" style="margin-bottom:14px">Entendendo cada gráfico</div>
+            <div class="chartguide-card" id="chartGuide"></div>
+          </div>
+
+          <div class="grid2">
+            <div class="card pad">
+              <div class="sec-title" style="margin-bottom:14px">Glossário</div>
+              <div class="glos" id="glos"></div>
+            </div>
+            <div class="card pad">
+              <div class="sec-title" style="margin-bottom:14px">Premissas &amp; fórmulas</div>
+              <div class="glos" id="premissas"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== AUTHOR ===== -->
+      <div class="author">
+        <div>
+          <div class="ttl">Desenvolvido por</div>
+          <div class="name">Davi Teixeira</div>
+        </div>
+        <a class="ig" href="https://instagram.com/daviteixeira.concursos" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1.2" fill="currentColor" stroke="none"/></svg>
+          @daviteixeira.concursos
+        </a>
+      </div>
+
+    </section>
+  </div>
+  </div>
+  </main>
+
+  <footer class="disc">
+    <div class="wrap">
+      <p>Estimativa de apoio à decisão · parâmetros vigentes de 2026 (Teto RGPS, tabela IRRF, EC 103/2019, Teto STF, UFIR-RJ R$ 4,9604). Verbas indenizatórias e PPE são estimativas. Confirme sempre no contracheque oficial e na legislação vigente. Triênios/ADF: 1º +10%, demais +5%, teto de 60% (para o novo auditor, ADF da LC 230/2026). Auxílios saúde (até 300 UFIR) e educação (até 500 UFIR/dependente, máx. 3) conforme Resolução SEFAZ nº 895/2026 — indenizatórios, por comprovação de gasto. Alimentação, transporte e moradia indexados à UFIR-RJ. Função gratificada conforme Resolução SEFAZ nº 874/2026 (art. 8º da LC 226/2025): % do teto STF, extra-teto e indenizatória. As "premissas avançadas" reproduzem por padrão o modelo da planilha-fonte. © Davi Teixeira · @daviteixeira.concursos</p>
+      <p><b>Projeto pessoal e independente.</b> Esta calculadora <b>não é</b> produto, publicação ou serviço da SEFAZ-RJ ou do Governo do Estado do Rio de Janeiro, e <b>não tem endosso, revisão ou chancela</b> de qualquer órgão público. É uma estimativa de caráter educacional: não substitui o contracheque, a legislação vigente nem orientação de profissional habilitado. <b>Seus dados não saem do seu navegador</b> — não há servidor, conta, telemetria nem coleta de dados; o cenário fica guardado só no seu dispositivo. (As fontes tipográficas são carregadas do Google Fonts, que recebe seu IP.) Uso educacional, sem modificações, conforme a <a href="LICENSE.md">Licença de Uso</a>. © 2026 Davi Teixeira.</p>
+    </div>
+  </footer>
+</div>
+
+<!-- ============ GLOBALS DRAWER ============ -->
+<div class="drawer-mask hidden no-print" id="drawer">
+  <div class="drawer-bg" data-act="closeGlobals"></div>
+  <div class="drawer afre-scroll">
+    <div class="row-between" style="align-items:center;margin-bottom:6px">
+      <h3>Variáveis globais</h3>
+      <button class="gclose" data-act="closeGlobals" aria-label="Fechar">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--faint);margin-bottom:18px;line-height:1.45">Premissas fixas do modelo. Ajuste se a legislação mudar. Os valores padrão seguem 2026.</div>
+    <div id="globalFields"></div>
+    <button class="btn-block" data-act="resetGlobals">↺ Restaurar valores padrão (2026)</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+(function(){
+// ============================================================ MODELO
+var DEFAULTS = {
+  tetoRGPS:8475.55, aliqRIOPREV:0.14, tetoSTF:46366.19,
+  // UFIR-RJ 2026 (Res. SEFAZ 849/2025) e verbas fixas indexadas, em UFIR.
+  ufir:4.9604, alimUfir:450, transpUfir:650, moradiaUfir:1500,
+  // Gratificação de presença por sessão realizada, em UFIR (Decreto 50.369/2026).
+  ccSessaoUfir:250, jrfSessaoUfir:100,
+  ppe:5848.17, reajuste:0.1156
+};
+var CLASSES = {
+  '3':{nome:'3ª classe (entrada)', vb:5387.39, prod:22043.55},
+  '2':{nome:'2ª classe',           vb:6338.11, prod:25943.57},
+  '1':{nome:'1ª classe (topo)',    vb:7456.59, prod:30521.84}
+};
+// Tetos dos auxílios variáveis indexados à UFIR-RJ (Res. SEFAZ 895/2026), em UFIR.
+var SAUDE_UFIR_MAX=300, EDUC_UFIR_MAX=500, EDUC_DEP_MAX=3;
+// Funções de chefia/assessoramento/direção — Resolução SEFAZ 874/2026 (art. 8º da LC 226/2025).
+// Percentual MÁXIMO aplicado sobre o teto (subsídio do STF). Extra-teto, indenizatória,
+// sem IR e sem previdência. Não acumuláveis entre si (só uma por vez).
+var FUNCOES = {
+  'I':  {pct:0.30,  rot:'Tipo I',   nome:'Subsecretário, Subsecretário Adjunto ou equivalente'},
+  'II': {pct:0.27,  rot:'Tipo II',  nome:'Superintendente, Assessor-Chefe, Presidente de órgão colegiado'},
+  'III':{pct:0.235, rot:'Tipo III', nome:'Auditor Fiscal Chefe, Coordenador ou Assessor'},
+  'IV': {pct:0.20,  rot:'Tipo IV',  nome:'Auditor Fiscal Subchefe ou demais funções de chefia'}
+};
+function funcaoPct(id){ return FUNCOES[id]?FUNCOES[id].pct:0; }
+// Órgãos de deliberação coletiva — gratificação de presença POR SESSÃO REALIZADA.
+// Decreto 50.369/2026: Conselho de Contribuintes e Representantes da Fazenda, 250 UFIR-RJ por
+// sessão, até 14 por mês; Junta de Revisão Fiscal, 100 UFIR-RJ, até 12 por mês.
+// O acréscimo de representação vem do parágrafo único (não revogado) do art. 1º dos Decretos
+// 12.936/1989 e 41.904/2009 — o decreto de 2026 só deu redação nova ao caput.
+// O art. 170 do Estatuto (Dec. 2.479/1979) VEDA participar de mais de um órgão: por isso o
+// órgão é um enum, e não dois toggles somáveis. A vedação é estrutural — não há estado capaz de
+// representar dois colegiados, então não há validação a esquecer. Mesmo idioma da função
+// gratificada, que também é "só uma por vez".
+// Art. 171: acumulável com quaisquer outras vantagens. Indenizatória: extra-teto, sem IR nem
+// previdência.
+var ORGAOS = {
+  'CC': {nome:'Conselho de Contribuintes', curto:'Conselho', ufirKey:'ccSessaoUfir', maxSessoes:14, cargos:[
+    {id:'membro',       add:0,    rot:'Conselheiro / Representante da Fazenda'},
+    {id:'presConselho', add:0.40, rot:'Presidente do Conselho'},
+    {id:'presCamara',   add:0.20, rot:'Presidente de Câmara'},
+    {id:'repGeral',     add:0.20, rot:'Representante Geral da Fazenda'},
+    {id:'secGeral',     add:0.10, rot:'Secretário-Geral'},
+    {id:'secCamara',    add:0.05, rot:'Secretário de Câmara'}
+  ]},
+  'JRF': {nome:'Junta de Revisão Fiscal', curto:'Junta', ufirKey:'jrfSessaoUfir', maxSessoes:12, cargos:[
+    {id:'membro',    add:0,    rot:'Membro julgador'},
+    {id:'presTurma', add:0.20, rot:'Presidente de Turma'},
+    {id:'secTurma',  add:0.05, rot:'Secretário de Turma'}
+  ]}
+};
+function orgaoMax(id){ return ORGAOS[id]?ORGAOS[id].maxSessoes:0; }
+// Cargo desconhecido degrada para 0% — que é exatamente o membro. Isso cobre o cargo de OUTRO
+// órgão (um 'presConselho' com a Junta selecionada, vindo de um link antigo) sem inventar
+// acréscimo nem estourar.
+function cargoAdd(orgao,cargo){
+  var o=ORGAOS[orgao]; if(!o) return 0;
+  for(var i=0;i<o.cargos.length;i++){ if(o.cargos[i].id===cargo) return o.cargos[i].add; }
+  return 0;
+}
+// Tabela progressiva IRRF mensal 2026 (vigente desde mai/2025)
+var IRRF = [
+  {lim:2428.80,  a:0,     d:0},
+  {lim:2826.65,  a:0.075, d:182.16},
+  {lim:3751.05,  a:0.15,  d:394.16},
+  {lim:4664.68,  a:0.225, d:675.49},
+  {lim:Infinity, a:0.275, d:908.73}
+];
+function computeIR(base){ if(base<=0) return 0; for(var i=0;i<IRRF.length;i++){ if(base<=IRRF[i].lim) return Math.max(0, base*IRRF[i].a-IRRF[i].d);} return 0; }
+function trifactor(n){ if(!n||n<1) return 1; return 1+Math.min(0.60, 0.10+0.05*(n-1)); }
+
+// ============================================================ PALETA
+// A paleta NÃO é duplicada aqui: C é um espelho vazio que LÊ as custom properties
+// do :root. Trocar de tema (data-theme ou prefers-color-scheme) muda o CSS, o
+// MutationObserver/matchMedia chama syncPalette()+refresh(), e os SVGs renascem
+// com as cores certas. Nenhuma cor de gráfico vive em JS.
+// blue é a série azul dos gráficos (--c-bruto), NÃO a cor de ação (--brand, verde):
+// nesta paleta o verde já carrega "positivo", então o bruto precisa do azul para não
+// virar mais uma barra verde. blueDk é o navy — a barra "Bruto" e a linha "Total bruto".
+var C = {};
+var TOKENS = {
+  ink:'--ink', soft:'--muted', faint:'--faint',
+  blue:'--c-bruto', blueDk:'--brand-deep',
+  green:'--pos', greenLt:'--pos-2', red:'--neg', amber:'--warn',
+  grid:'--c-grid', axis:'--c-axis', conn:'--c-conn',
+  off:'--c-off', alt:'--c-alt', prev:'--c-prev', nominal:'--c-nominal',
+  surface:'--surface'
+};
+function syncPalette(){
+  var cs = getComputedStyle(document.documentElement);
+  for(var k in TOKENS){
+    var v = cs.getPropertyValue(TOKENS[k]);
+    C[k] = (v && v.trim()) || '#888888';
+  }
+}
+
+// ============================================================ FORMATO
+function BRL(v){ return 'R$ '+(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function BRL0(v){ return 'R$ '+Math.round(v||0).toLocaleString('pt-BR'); }
+function K(v){ v=v||0; var a=Math.abs(v); if(a>=1e6) return 'R$ '+(v/1e6).toLocaleString('pt-BR',{maximumFractionDigits:2})+' mi'; if(a>=1000) return 'R$ '+(v/1000).toLocaleString('pt-BR',{maximumFractionDigits:0})+'k'; return 'R$ '+Math.round(v); }
+function PCT(v){ return (v*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%'; }
+function BRLdelta(v){ return (v<0?'−':'+')+'R$ '+Math.round(Math.abs(v||0)).toLocaleString('pt-BR'); }
+function NUM2(v){ return (v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+// ---- animação de contagem no hero (respeita prefers-reduced-motion) ----
+function reduceMotion(){ try{ return window.matchMedia('(prefers-reduced-motion:reduce)').matches; }catch(e){ return false; } }
+var _heroVal=0,_heroRAF=null;
+function animateHero(el,to){
+  if(!el) return;
+  if(reduceMotion()||!window.requestAnimationFrame){ el.textContent=BRL(to); _heroVal=to; return; }
+  var from=_heroVal,t0=null,dur=560;
+  if(Math.abs(to-from)<0.5){ el.textContent=BRL(to); _heroVal=to; return; }
+  if(_heroRAF) cancelAnimationFrame(_heroRAF);
+  function step(ts){ if(t0===null)t0=ts; var p=Math.min(1,(ts-t0)/dur),e=1-Math.pow(1-p,3),v=from+(to-from)*e; el.textContent=BRL(v); if(p<1){_heroRAF=requestAnimationFrame(step);} else {_heroVal=to;} }
+  _heroRAF=requestAnimationFrame(step);
+}
+
+// ============================================================ ESTADO
+var DEFAULT_STATE = {
+  tab:'calc', classe:'3', reajuste:false,
+  rpc:true, aliqRPC:8.5,
+  tri:false, priorYears:0, contaAnterior:true,
+  funcao:'',
+  orgao:'', cargoColegiado:'membro', sessoes:14,
+  ppe:true, ppeValue:5848.17,
+  moradia:false,
+  saude:false, saudeUfir:300,
+  educacao:false, educUfir:500, educDeps:1,
+  alim:true, transp:true,
+  triEmProd:true, ppeTributada:false, rppsFullSemAdesao:false,
+  horizonte:35, horizonteC:35,
+  taxaRPC:8, taxaPropria:8, match:100, contribCresce:true
+};
+var state = Object.assign({}, DEFAULT_STATE);
+state.g = Object.assign({}, DEFAULTS);
+
+function slim(){ var o={}; for(var k in state){ if(k!=='tab') o[k]=state[k]; } return o; }
+function persist(){ try{ localStorage.setItem('afre_v2', JSON.stringify(slim())); }catch(e){} }
+function loadState(){
+  var loaded=null;
+  try{
+    var h=location.hash.match(/s=([^&]+)/);
+    if(h) loaded=JSON.parse(decodeURIComponent(escape(atob(h[1]))));
+    else { var ls=localStorage.getItem('afre_v2'); if(ls) loaded=JSON.parse(ls); }
+  }catch(e){}
+  if(loaded){ var g=Object.assign({},DEFAULTS,loaded.g||{}); Object.assign(state,loaded); state.g=g; state.tab='calc'; }
+}
+// O state chega de FORA — do #s= de um link compartilhado e do localStorage. Os controles
+// impedem valor negativo (todo slider tem min="0"), mas o hash não passa por controle nenhum.
+// E um auxílio negativo DESCONTA: Math.min(-100,300)*ufir = −R$ 496,04 no líquido. Um auxílio
+// é reembolso por comprovação de gasto — o piso é zero, nunca vira desconto.
+// Saneamos na fronteira, onde a entrada não confiável entra; o núcleo de cálculo fica intocado.
+var NAO_NEGATIVOS = ['saudeUfir','educUfir','educDeps','ppeValue','priorYears','aliqRPC','sessoes'];
+function sanitizeState(){
+  for(var i=0;i<NAO_NEGATIVOS.length;i++){
+    var k=NAO_NEGATIVOS[i], v=Number(state[k]);
+    state[k] = (isFinite(v) && v>0) ? v : 0;
+  }
+}
+
+// ============================================================ CÁLCULO
+function buildParams(t){
+  var order=['3','2','1'];
+  var startIdx=order.indexOf(state.classe);
+  var classe=order[Math.min(2, startIdx+Math.floor(t/3))];
+  var trienios=0;
+  if(state.tri){
+    var base=(state.contaAnterior?(Number(state.priorYears)||0):0)+t;
+    trienios=Math.floor(base/3);
+  }
+  return {
+    classe:classe, trienios:trienios, reajuste:state.reajuste,
+    rpc:state.rpc, aliqRPC:(state.aliqRPC/100),
+    funcao:state.funcao,
+    orgao:state.orgao, cargoColegiado:state.cargoColegiado, sessoes:Number(state.sessoes)||0,
+    ppe:state.ppe, ppeValue:Number(state.ppeValue)||0,
+    alim:state.alim, transp:state.transp,
+    moradia:state.moradia,
+    saude:state.saude, saudeUfir:Number(state.saudeUfir)||0,
+    educacao:state.educacao, educUfir:Number(state.educUfir)||0, educDeps:Number(state.educDeps)||0,
+    triEmProd:state.triEmProd, ppeTributada:state.ppeTributada,
+    rppsFullSemAdesao:state.rppsFullSemAdesao
+  };
+}
+function calc(p){
+  var g=state.g, cl=CLASSES[p.classe];
+  var fatReaj=p.reajuste?(1+g.reajuste):1;
+  var fatTri=trifactor(p.trienios);
+  var vb=cl.vb*fatReaj*fatTri;
+  var prod=cl.prod*fatReaj*(p.triEmProd?fatTri:1);
+  var brutoFull=vb+prod;
+  var abate=Math.max(0, brutoFull-g.tetoSTF);
+  var bruto=brutoFull-abate;
+  // Novos entrantes (pós-instituição do RJPrev) têm a contribuição ao RPPS
+  // limitada ao teto do RGPS, ADERINDO OU NÃO ao RPC. A adesão apenas ACRESCENTA
+  // a contribuição complementar (com contrapartida) sobre o que excede o teto.
+  // O toggle ppFullSemAdesao reproduz o modelo antigo da planilha (14% sobre todo o bruto).
+  var rppsBase=(!p.rpc && p.rppsFullSemAdesao)? bruto : Math.min(bruto, g.tetoRGPS);
+  var rpps=g.aliqRIOPREV*rppsBase;
+  var rjprev=p.rpc? p.aliqRPC*Math.max(0, bruto-g.tetoRGPS) : 0;
+  var ppeVal=p.ppe?(Number(p.ppeValue)||0):0;
+  var baseIR=(bruto-rpps-rjprev)+(p.ppeTributada?ppeVal:0);
+  var ir=computeIR(baseIR);
+  var totalAntes=bruto-rpps-rjprev-ir;
+  // Verbas fixas indenizatórias indexadas à UFIR-RJ (quantidade em UFIR × valor da UFIR).
+  var ufir=g.ufir||0;
+  var alim=p.alim?(g.alimUfir||0)*ufir:0;
+  var transp=p.transp?(g.transpUfir||0)*ufir:0;
+  var totalApos=totalAntes+alim+transp;
+  var moradia=p.moradia?(g.moradiaUfir||0)*ufir:0;
+  // Função gratificada (Res. 874/2026): % do teto STF, extra-teto, indenizatória,
+  // sem IR nem previdência. Só entra como acréscimo no líquido.
+  var funcaoVal=funcaoPct(p.funcao)*g.tetoSTF;
+  // Auxílios saúde/educação (Res. SEFAZ 895/2026): reembolso por comprovação, teto em UFIR,
+  // indenizatórios, extra-teto, sem IR nem previdência, fora de 13º/férias.
+  // Saúde é global (independe de dependentes); educação é por dependente (até 3).
+  var saudeVal=p.saude?Math.min(Number(p.saudeUfir)||0,SAUDE_UFIR_MAX)*ufir:0;
+  var educDeps=Math.max(0,Math.min(EDUC_DEP_MAX,Number(p.educDeps)||0));
+  var educVal=p.educacao?Math.min(Number(p.educUfir)||0,EDUC_UFIR_MAX)*educDeps*ufir:0;
+  // Gratificação de presença em órgão de deliberação coletiva (Dec. 50.369/2026):
+  // sessões realizadas × valor da sessão em UFIR × (1 + acréscimo de representação do cargo).
+  // Sessão é evento discreto ("por sessão realizada") e tem teto mensal na norma — daí o floor
+  // e o min. O clamp mora AQUI, como o de educDeps: normalizar escrevendo de volta no state
+  // faria o link #s= divergir do state persistido.
+  var org=ORGAOS[p.orgao];
+  var sessoes=org?Math.max(0,Math.min(org.maxSessoes,Math.floor(Number(p.sessoes)||0))):0;
+  var colegiadoVal=org?sessoes*(g[org.ufirKey]||0)*ufir*(1+cargoAdd(p.orgao,p.cargoColegiado)):0;
+  var totalFinal=totalApos+ppeVal+moradia+funcaoVal+saudeVal+educVal+colegiadoVal;
+  var prevTotal=rpps+rjprev;
+  return {
+    vb:vb, prod:prod, brutoFull:brutoFull, abate:abate, bruto:bruto,
+    rpps:rpps, rjprev:rjprev, prevTotal:prevTotal, baseIR:baseIR, ir:ir,
+    totalAntes:totalAntes, alim:alim, transp:transp, totalApos:totalApos,
+    ppe:ppeVal, moradia:moradia, funcao:p.funcao, funcaoVal:funcaoVal,
+    saudeVal:saudeVal, educVal:educVal, educDeps:educDeps,
+    orgao:p.orgao, cargoColegiado:p.cargoColegiado, sessoes:sessoes, colegiadoVal:colegiadoVal,
+    totalFinal:totalFinal,
+    deducoes:prevTotal+ir, aliqEfIR: baseIR>0?ir/baseIR:0, cargaPrev: bruto>0?prevTotal/bruto:0,
+    sobra: brutoFull>0? totalAntes/brutoFull : 0,
+    fatTri:fatTri, trienios:p.trienios, classe:p.classe
+  };
+}
+function fvSchedule(rateAnnual, sched){ var i=Math.pow(1+rateAnnual,1/12)-1,b=0; for(var k=0;k<sched.length;k++){ b=b*(1+i)+sched[k]; } return b; }
+function breakeven(sched, target){ var lo=0,hi=0.6,mid,v; for(var k=0;k<70;k++){ mid=(lo+hi)/2; v=fvSchedule(mid,sched); if(v<target) lo=mid; else hi=mid; } return (lo+hi)/2; }
+
+// ============================================================ SVG CHARTS
+// Todo gráfico é gerado NA LARGURA REAL do container (viewBox 1:1 com o CSS), então
+// 11px de fonte são 11px de verdade em qualquer viewport. Era isto que tornava os
+// gráficos ilegíveis no celular: um viewBox de 760 espremido em 340px encolhia os
+// rótulos pela metade.
+var UID = 0;
+var ARM = false;                       // anima a entrada só em mudanças discretas
+function ec(){ return ARM ? ' class="enter"' : ''; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function svgOpen(w,h,title){
+  return '<svg viewBox="0 0 '+w+' '+h+'"'+ec()+' role="img" aria-label="'+esc(title||'gráfico')+'">'+
+         '<title>'+esc(title||'gráfico')+'</title>';
+}
+function gradDef(id,color,from,to){
+  return '<linearGradient id="'+id+'" x1="0" y1="0" x2="0" y2="1">'+
+    '<stop offset="0" stop-color="'+color+'" stop-opacity="'+from+'"/>'+
+    '<stop offset="1" stop-color="'+color+'" stop-opacity="'+to+'"/></linearGradient>';
+}
+var MONO = 'IBM Plex Mono,ui-monospace,monospace';
+var SANS = 'IBM Plex Sans,system-ui,sans-serif';
+
+function lineChartSVG(o){
+  var w=o.w||760,h=o.h||280,narrow=w<430;
+  var pl=o.pl!=null?o.pl:(narrow?42:58),pr=o.pr!=null?o.pr:14,pt=16,pb=28;
+  var iw=w-pl-pr,ih=h-pt-pb,n=o.n;
+  var ymin=o.ymin!=null?o.ymin:0, ymax=o.ymax;
+  if(ymax==null){ ymax=0; (o.series||[]).forEach(function(s){ s.data.forEach(function(v){ if(v>ymax)ymax=v; }); }); (o.hlines||[]).forEach(function(l){ if(l.y>ymax)ymax=l.y; }); ymax=ymax*1.1||1; }
+  if(!(ymax>ymin)) ymax=ymin+1;
+  function X(i){ return pl+(n<=1?iw/2:iw*i/(n-1)); }
+  function Y(v){ return pt+ih*(1-(v-ymin)/(ymax-ymin)); }
+  var u='u'+(++UID), k=[], defs=[], t, val, y;
+  defs.push('<clipPath id="clip'+u+'"><rect class="rv" x="'+pl+'" y="0" width="'+iw+'" height="'+h+'"/></clipPath>');
+  // Série inteiramente zerada (ex.: triênios desligados). A escala colapsa e o eixo
+  // passa a medir de R$ 0 a R$ 1 — um gráfico que não diz nada. Em vez disso: uma
+  // grade calada e uma frase que nomeia a ação que falta.
+  var vazio = !!o.emptyNote && (o.series||[]).length>0 &&
+    (o.series||[]).every(function(s){ return s.data.every(function(v){ return v===0; }); });
+  var seen={}, fmtY=o.yfmt||K;
+  for(t=0;t<=4;t++){ val=ymin+(ymax-ymin)*t/4; y=Y(val);
+    k.push('<line x1="'+pl+'" x2="'+(w-pr)+'" y1="'+y+'" y2="'+y+'" stroke="'+C.grid+'" stroke-width="1"/>');
+    var lab=fmtY(val);
+    if(vazio && val!==ymin) continue;   // sem escala falsa: só o zero fica rotulado
+    if(!seen[lab]){ seen[lab]=1;
+      k.push('<text x="'+(pl-8)+'" y="'+(y+4)+'" text-anchor="end" font-size="10.5" fill="'+C.faint+'" font-family="'+MONO+'">'+lab+'</text>');
+    }
+  }
+  if(vazio){
+    k.push('<text x="'+(pl+iw/2)+'" y="'+(pt+ih/2)+'" text-anchor="middle" font-size="12.5" fill="'+C.soft+
+           '" font-family="'+SANS+'">'+o.emptyNote+'</text>');
+  }
+  (o.xticks||[]).forEach(function(xt){ k.push('<text x="'+X(xt.i)+'" y="'+(h-8)+'" text-anchor="middle" font-size="10.5" fill="'+C.faint+'" font-family="'+SANS+'">'+xt.label+'</text>'); });
+  var body=[];
+  (o.series||[]).forEach(function(s,si){
+    var pts=s.data.map(function(v,i){ return X(i)+','+Y(v); });
+    if(s.fillOf){
+      var gid='g'+u+'_'+si;
+      defs.push(gradDef(gid,s.fillOf,'0.30','0'));
+      var d='M'+pts.join(' L')+' L'+X(s.data.length-1)+','+Y(ymin)+' L'+X(0)+','+Y(ymin)+' Z';
+      body.push('<path d="'+d+'" fill="url(#'+gid+')" stroke="none"/>');
+    }
+    body.push('<path d="M'+pts.join(' L')+'" fill="none" stroke="'+s.color+'" stroke-width="'+(s.width||2.4)+
+      '" stroke-dasharray="'+(s.dash||'')+'" stroke-linejoin="round" stroke-linecap="round"/>');
+  });
+  k.push('<g clip-path="url(#clip'+u+')">'+body.join('')+'</g>');
+  (o.hlines||[]).forEach(function(l){ var yy=Y(l.y);
+    k.push('<line x1="'+pl+'" x2="'+(w-pr)+'" y1="'+yy+'" y2="'+yy+'" stroke="'+(l.color||C.amber)+'" stroke-width="1.5" stroke-dasharray="5 4"/>');
+    k.push('<text x="'+(w-pr)+'" y="'+(yy-7)+'" text-anchor="end" font-size="10.5" font-weight="700" fill="'+(l.color||C.amber)+'" font-family="'+SANS+'">'+l.label+'</text>');
+  });
+  var svg=svgOpen(w,h,o.title)+'<defs>'+defs.join('')+'</defs>'+k.join('')+'</svg>';
+  var geo={w:w,h:h,pl:pl,iw:iw,n:n,X:X,Y:Y,dots:true, series:o.series||[],
+    xlabel:function(i){ return (o.xlabelFn?o.xlabelFn(i):(i+'a')); }, yfmt:o.tipFmt||o.yfmt||BRL0};
+  return {svg:svg, geo:geo};
+}
+function stackChartSVG(o){
+  var w=o.w||760,h=o.h||260,narrow=w<430;
+  var pl=narrow?42:58,pr=14,pt=16,pb=28,iw=w-pl-pr,ih=h-pt-pb,n=o.n;
+  var ymax=0,i,t,val,y,s;
+  for(i=0;i<n;i++){ s=0; o.layers.forEach(function(L){ s+=L.data[i]; }); if(s>ymax)ymax=s; }
+  ymax=ymax*1.1; if(!(ymax>0)) ymax=1;
+  function X(i){ return pl+(n<=1?iw/2:iw*i/(n-1)); }
+  function Y(v){ return pt+ih*(1-v/ymax); }
+  var u='u'+(++UID), k=[], defs=[];
+  defs.push('<clipPath id="clip'+u+'"><rect class="rv" x="'+pl+'" y="0" width="'+iw+'" height="'+h+'"/></clipPath>');
+  for(t=0;t<=4;t++){ val=ymax*t/4; y=Y(val);
+    k.push('<line x1="'+pl+'" x2="'+(w-pr)+'" y1="'+y+'" y2="'+y+'" stroke="'+C.grid+'" stroke-width="1"/>');
+    k.push('<text x="'+(pl-8)+'" y="'+(y+4)+'" text-anchor="end" font-size="10.5" fill="'+C.faint+'" font-family="'+MONO+'">'+K(val)+'</text>');
+  }
+  (o.xticks||[]).forEach(function(xt){ k.push('<text x="'+X(xt.i)+'" y="'+(h-8)+'" text-anchor="middle" font-size="10.5" fill="'+C.faint+'" font-family="'+SANS+'">'+xt.label+'</text>'); });
+  // Preenchimento leve + filete da superfície entre as camadas: as áreas empilhadas
+  // param de brigar entre si, a grade volta a aparecer por baixo, e o que carrega a
+  // leitura é o traço do topo de cada camada — não o bloco de cor.
+  var base=new Array(n).fill(0), body=[], edges=[];
+  o.layers.forEach(function(L){
+    var top=base.map(function(b,i){ return b+L.data[i]; });
+    var up=top.map(function(v,i){ return X(i)+','+Y(v); });
+    var dn=base.map(function(v,i){ return X(i)+','+Y(v); }).reverse();
+    body.push('<path d="M'+up.join(' L')+' L'+dn.join(' L')+' Z" fill="'+L.color+'" opacity="0.55"/>');
+    edges.push('<path d="M'+up.join(' L')+'" fill="none" stroke="'+C.surface+'" stroke-width="3.5" stroke-linejoin="round"/>');
+    edges.push('<path d="M'+up.join(' L')+'" fill="none" stroke="'+L.color+'" stroke-width="1.75" stroke-linejoin="round"/>');
+    base=top;
+  });
+  k.push('<g clip-path="url(#clip'+u+')">'+body.join('')+edges.join('')+'</g>');
+  var svg=svgOpen(w,h,o.title)+'<defs>'+defs.join('')+'</defs>'+k.join('')+'</svg>';
+  var series=o.layers.map(function(L){ return {name:L.name,color:L.color,data:L.data}; });
+  series.push({name:'Total',color:C.ink,data:base});
+  var geo={w:w,h:h,pl:pl,iw:iw,n:n,X:X,dots:false, series:series, xlabel:function(i){ return i+'a'; }, yfmt:BRL0};
+  return {svg:svg, geo:geo};
+}
+
+/* Barras. Vira HORIZONTAL quando é estreito demais para caber rótulo sob a barra:
+   no celular, "Educação" simplesmente não cabe em 34px de largura. */
+function barChartSVG(items,opts){
+  opts=opts||{};
+  var w=opts.w||720, horiz=opts.horiz!=null?opts.horiz:(w<520&&items.length>4);
+  var u='u'+(++UID), k=[], defs=[], fmt=opts.vfmt||K;
+  var max=0,min=0; items.forEach(function(it){ if(it.value>max)max=it.value; if(it.value<min)min=it.value; });
+  var span=(max-min)||1;
+
+  if(horiz){
+    var gl=Math.min(96,Math.max(70,w*0.26)), gr=64, rh=24, gap=9, pt2=6;
+    var h2=pt2*2+items.length*rh+(items.length-1)*gap, iw2=w-gl-gr;
+    var X0=function(v){ return gl+iw2*(v-min)/span; }, zx=X0(0);
+    k.push('<line x1="'+zx+'" x2="'+zx+'" y1="'+pt2+'" y2="'+(h2-pt2)+'" stroke="'+C.axis+'" stroke-width="1"/>');
+    items.forEach(function(it,i){
+      var y0=pt2+i*(rh+gap), xv=X0(it.value);
+      var bx=Math.min(zx,xv), bw2=Math.max(2,Math.abs(xv-zx));
+      var gid='g'+u+'_'+i;
+      defs.push('<linearGradient id="'+gid+'" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="'+it.color+'" stop-opacity=".75"/><stop offset="1" stop-color="'+it.color+'" stop-opacity="1"/></linearGradient>');
+      k.push('<rect class="bar hz" style="--i:'+i+'" x="'+bx+'" y="'+y0+'" width="'+bw2+'" height="'+rh+'" rx="5" fill="url(#'+gid+')"/>');
+      k.push('<text class="lb" style="--i:'+i+'" x="'+(gl-10)+'" y="'+(y0+rh/2+4)+'" text-anchor="end" font-size="11.5" fill="'+C.soft+'" font-family="'+SANS+'">'+esc(it.label)+'</text>');
+      k.push('<text class="lb" style="--i:'+i+'" x="'+(w-4)+'" y="'+(y0+rh/2+4)+'" text-anchor="end" font-size="11.5" font-weight="700" fill="'+(it.tcolor||it.color)+'" font-family="'+MONO+'">'+fmt(it.value)+'</text>');
+    });
+    return {svg:svgOpen(w,h2,opts.title)+'<defs>'+defs.join('')+'</defs>'+k.join('')+'</svg>', geo:null};
+  }
+
+  var h=opts.h||260, pl=14, pr=14, pt=22, pb=30, iw=w-pl-pr, ih=h-pt-pb;
+  function Y(v){ return pt+ih*(1-(v-min)/span); }
+  var zero=Y(0), gap2=Math.max(10,w*0.02), bw=(iw-gap2*(items.length-1))/items.length;
+  k.push('<line x1="'+pl+'" x2="'+(w-pr)+'" y1="'+zero+'" y2="'+zero+'" stroke="'+C.axis+'" stroke-width="1"/>');
+  items.forEach(function(it,i){
+    var x=pl+i*(bw+gap2), bh=Math.abs(Y(it.value)-zero), yTop=it.value>=0?zero-bh:zero;
+    var gid='g'+u+'_'+i;
+    defs.push(gradDef(gid,it.color,'1','0.62'));
+    k.push('<rect class="bar'+(it.value<0?' dn':'')+'" style="--i:'+i+'" x="'+x+'" y="'+yTop+'" width="'+bw+'" height="'+Math.max(2,bh)+'" rx="6" fill="url(#'+gid+')"/>');
+    // O rótulo de valor fica SEMPRE acima da linha do zero. Embaixo da barra negativa
+    // ele colidia com o nome da categoria quando a barra era curta.
+    var vy=(it.value>=0 ? zero-bh-8 : zero-8);
+    k.push('<text class="lb" style="--i:'+i+'" x="'+(x+bw/2)+'" y="'+vy+'" text-anchor="middle" font-size="11.5" font-weight="700" fill="'+(it.tcolor||it.color)+'" font-family="'+MONO+'">'+fmt(it.value)+'</text>');
+    k.push('<text class="lb" style="--i:'+i+'" x="'+(x+bw/2)+'" y="'+(h-9)+'" text-anchor="middle" font-size="11" fill="'+C.soft+'" font-family="'+SANS+'">'+esc(it.label)+'</text>');
+  });
+  return {svg:svgOpen(w,h,opts.title)+'<defs>'+defs.join('')+'</defs>'+k.join('')+'</svg>', geo:null};
+}
+/* Cascata HORIZONTAL. O contracheque é uma lista de linhas, não um gráfico de colunas:
+   com o eixo deitado, "Previdência" e "Auxílio-educação" cabem por extenso em QUALQUER
+   largura, e a leitura vira exatamente a da folha de pagamento. */
+function waterfallSVG(now, w){
+  var steps=[
+    {label:'Bruto',        v:now.bruto,            type:'total', color:C.blueDk},
+    {label:'Previdência',  v:-now.prevTotal,       type:'neg',   color:C.red},
+    {label:'IRPF',         v:-now.ir,              type:'neg',   color:C.red},
+    {label:'Ajudas',       v:now.alim+now.transp,  type:'pos',   color:C.green},
+    {label:'PPE',          v:now.ppe,              type:'pos',   color:C.greenLt}
+  ];
+  if(now.moradia>0)   steps.push({label:'Moradia',   v:now.moradia,   type:'pos', color:C.greenLt});
+  if(now.funcaoVal>0) steps.push({label:'Função',    v:now.funcaoVal, type:'pos', color:C.greenLt});
+  if(now.saudeVal>0)  steps.push({label:'Saúde',     v:now.saudeVal,  type:'pos', color:C.greenLt});
+  if(now.educVal>0)   steps.push({label:'Educação',  v:now.educVal,   type:'pos', color:C.greenLt});
+  if(now.colegiadoVal>0) steps.push({label:'Presença', v:now.colegiadoVal, type:'pos', color:C.greenLt});
+
+  var fin=now.totalFinal;
+  var gl=Math.min(100,Math.max(72,w*0.24)), gr=58, rh=24, gap=10, pt=6, pb=6;
+  var rows=steps.length+1;
+  var h=pt+pb+rows*rh+(rows-1)*gap, iw=w-gl-gr;
+  var xmax=Math.max(now.bruto,fin)*1.05; if(!(xmax>0)) xmax=1;
+  function X(v){ return gl+iw*Math.max(0,Math.min(1,v/xmax)); }
+  var u='u'+(++UID), k=[], defs=[], cum=0;
+
+  function row(i,label,val,x0,x1,color,strong){
+    var y=pt+i*(rh+gap), a=Math.min(x0,x1), b=Math.max(x0,x1);
+    var gid='g'+u+'_'+i;
+    defs.push('<linearGradient id="'+gid+'" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="'+color+'" stop-opacity=".72"/><stop offset="1" stop-color="'+color+'" stop-opacity="1"/></linearGradient>');
+    k.push('<rect class="bar hz" style="--i:'+i+'" x="'+a+'" y="'+y+'" width="'+Math.max(2,b-a)+'" height="'+rh+'" rx="5" fill="url(#'+gid+')"/>');
+    k.push('<text class="lb" style="--i:'+i+'" x="'+(gl-10)+'" y="'+(y+rh/2+4)+'" text-anchor="end" font-size="11.5" font-weight="'+(strong?700:400)+'" fill="'+(strong?color:C.soft)+'" font-family="'+SANS+'">'+esc(label)+'</text>');
+    k.push('<text class="lb" style="--i:'+i+'" x="'+(w-4)+'" y="'+(y+rh/2+4)+'" text-anchor="end" font-size="11.5" font-weight="700" fill="'+color+'" font-family="'+MONO+'">'+(val>=0?'+':'−')+Math.round(Math.abs(val)/1000)+'k</text>');
+    return y;
+  }
+  steps.forEach(function(s,i){
+    var x0,x1;
+    if(s.type==='total'){ cum=s.v; x0=X(0); x1=X(cum); }
+    else { var prev=cum; cum=cum+s.v; x0=X(prev); x1=X(cum); }
+    var y=row(i,s.label,s.v,x0,x1,s.color,s.type==='total');
+    // conector: liga o fim desta linha ao começo da próxima
+    if(i<steps.length-1){
+      var xc=X(cum), y2=pt+(i+1)*(rh+gap);
+      k.push('<line class="cn" x1="'+xc+'" x2="'+xc+'" y1="'+(y+rh)+'" y2="'+y2+'" stroke="'+C.conn+'" stroke-width="1" stroke-dasharray="3 3"/>');
+    }
+  });
+  row(steps.length,'Líquido',fin,X(0),X(fin),C.green,true);
+  return {svg:svgOpen(w,h,'Do bruto ao líquido')+'<defs>'+defs.join('')+'</defs>'+k.join('')+'</svg>', geo:null};
+}
+
+// ---- chart mount + hover ----
+// Largura real do container. Em aba oculta o clientWidth é 0: cai no fallback e o
+// gráfico é redesenhado com a medida certa quando a aba aparece (refresh() roda no
+// clique da aba) e a cada resize.
+function chartW(id, fallback){
+  var c=document.getElementById(id); if(!c) return fallback;
+  var w=Math.round(c.clientWidth);
+  return w>80 ? w : fallback;
+}
+function mountChart(id, res){
+  var c=document.getElementById(id); if(!c) return;
+  var holder=c.querySelector('.chart-svg');
+  if(!holder){ holder=document.createElement('div'); holder.className='chart-svg'; c.appendChild(holder); }
+  holder.innerHTML=res.svg;
+  c.__geo=res.geo;
+  if(res.geo) attachHover(c);
+  else {
+    var tp=c.querySelector('.chart-tip'); if(tp)tp.style.display='none';
+    var gd=c.querySelector('.chart-guide'); if(gd)gd.style.display='none';
+    (c.__dots||[]).forEach(function(d){ d.style.display='none'; });
+  }
+}
+function attachHover(c){
+  if(c.__bound) return; c.__bound=true;
+  var tip=document.createElement('div'); tip.className='chart-tip'; tip.style.display='none'; c.appendChild(tip);
+  var guide=document.createElement('div'); guide.className='chart-guide'; guide.style.display='none'; c.appendChild(guide);
+  c.__dots=[];
+  function hide(){
+    tip.style.display='none'; guide.style.display='none';
+    c.__dots.forEach(function(d){ d.style.display='none'; });
+  }
+  c.addEventListener('mousemove', function(e){
+    var g=c.__geo; if(!g){ hide(); return; }
+    var rect=c.getBoundingClientRect();
+    var sc=rect.width/g.w;                       // viewBox -> px
+    var i=Math.round(((e.clientX-rect.left)/sc - g.pl)/(g.iw||1)*(g.n-1));
+    i=Math.max(0,Math.min(g.n-1,i));
+    var xpx=g.X(i)*sc;
+    guide.style.display='block'; guide.style.left=xpx+'px';
+
+    // bolinhas nos pontos da série (só nos gráficos de linha)
+    while(c.__dots.length < g.series.length){
+      var d=document.createElement('div'); d.className='chart-dot'; c.appendChild(d); c.__dots.push(d);
+    }
+    c.__dots.forEach(function(d,si){
+      var s=g.series[si];
+      if(!g.dots || !s || !g.Y || s.data[i]==null){ d.style.display='none'; return; }
+      d.style.display='block';
+      d.style.background=s.color;
+      d.style.left=xpx+'px';
+      d.style.top=(g.Y(s.data[i])*sc)+'px';
+    });
+
+    var html='<div class="tip-x">'+g.xlabel(i)+'</div>';
+    g.series.forEach(function(s){
+      html+='<div class="tip-row"><span class="dot" style="background:'+s.color+'"></span>'+s.name+'<b>'+g.yfmt(s.data[i])+'</b></div>';
+    });
+    tip.innerHTML=html; tip.style.display='block';
+    var tw=tip.offsetWidth||150;
+    var tx=xpx+16; if(tx>rect.width-tw-4) tx=xpx-16-tw;
+    tip.style.left=Math.max(2,tx)+'px';
+    tip.style.top=Math.max(6,Math.min(rect.height-tip.offsetHeight-6,(e.clientY-rect.top)-14))+'px';
+  });
+  c.addEventListener('mouseleave', hide);
+}
+
+// ============================================================ PRESETS
+function approx(a,b){ return Math.abs(a-b)<0.005; }
+function detectPreset(){
+  var s=state;
+  if(!(s.classe==='3'&&s.rpc&&approx(s.aliqRPC,8.5)&&s.ppe&&approx(s.ppeValue,5848.17)&&!s.moradia&&!s.saude&&!s.educacao&&!s.funcao&&!s.orgao&&s.alim&&s.transp&&s.triEmProd&&!s.ppeTributada)) return 0;
+  function triOK(want){ return want ? (s.tri&&s.contaAnterior&&Number(s.priorYears)===9) : (!s.tri); }
+  if(!s.reajuste&&triOK(false)) return 1;
+  if(!s.reajuste&&triOK(true))  return 2;
+  if(s.reajuste&&triOK(false))  return 3;
+  if(s.reajuste&&triOK(true))   return 4;
+  return 0;
+}
+function applyPreset(n){
+  var base={classe:'3',rpc:true,aliqRPC:8.5,funcao:'',orgao:'',cargoColegiado:'membro',sessoes:14,ppe:true,ppeValue:5848.17,moradia:false,saude:false,saudeUfir:300,educacao:false,educUfir:500,educDeps:1,alim:true,transp:true,triEmProd:true,ppeTributada:false,rppsFullSemAdesao:false};
+  if(n===1) Object.assign(state,base,{reajuste:false,tri:false,priorYears:0,contaAnterior:true});
+  if(n===2) Object.assign(state,base,{reajuste:false,tri:true,priorYears:9,contaAnterior:true});
+  if(n===3) Object.assign(state,base,{reajuste:true,tri:false,priorYears:0,contaAnterior:true});
+  if(n===4) Object.assign(state,base,{reajuste:true,tri:true,priorYears:9,contaAnterior:true});
+  syncInputs(); refresh();
+}
+
+// ============================================================ DOM HELPERS
+function $(s,r){ return (r||document).querySelector(s); }
+function $$(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
+function setText(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
+function setSw(name,on){ var b=$('[data-toggle="'+name+'"]'); if(b){ b.classList.toggle('on',!!on); b.setAttribute('aria-checked', on?'true':'false'); } }
+function showSub(id,on){ var e=document.getElementById(id); if(e) e.classList.toggle('hidden',!on); }
+
+// ============================================================ TEMA
+// O tema NÃO mora em `state`: `state` é serializado no link #s= e no localStorage
+// afre_v2, e tema não é parâmetro de cálculo. Chave própria: afre_theme.
+var mqDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme:dark)') : null;
+function themeNow(){
+  var a = document.documentElement.getAttribute('data-theme');
+  if(a==='dark'||a==='light') return a;
+  return (mqDark && mqDark.matches) ? 'dark' : 'light';
+}
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme', t);   // o observer cuida do repaint
+  try{ localStorage.setItem('afre_theme', t); }catch(e){}
+}
+function watchTheme(){
+  // Alguém pode trocar <html data-theme> por fora (é o que o script de screenshots faz).
+  // Sem isto, o CSS mudaria e os SVGs ficariam com as cores do tema anterior.
+  if(window.MutationObserver){
+    new MutationObserver(function(){ syncPalette(); ARM=!reduceMotion(); refresh(); })
+      .observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
+  }
+  if(mqDark && mqDark.addEventListener){
+    mqDark.addEventListener('change', function(){
+      if(!document.documentElement.getAttribute('data-theme')){ syncPalette(); refresh(); }
+    });
+  }
+}
+
+// ---- a régua do teto (assinatura do hero) ----
+// Sem animar width/left: o preenchimento é clip-path e os marcadores translateX(px).
+function paintRail(now){
+  var g=state.g, track=document.getElementById('railTrack');
+  var maxV=Math.max(g.tetoSTF||0, now.brutoFull||0)*1.02;
+  if(!(maxV>0)) maxV=1;
+  var pct=function(v){ return Math.max(0,Math.min(100,(v/maxV)*100)); };
+  var fill=document.getElementById('railFill');
+  var ab=document.getElementById('railAbate');
+  var tetoP=pct(g.tetoSTF||0);
+  if(fill) fill.style.setProperty('--f', pct(now.bruto)+'%');
+  if(ab){
+    ab.style.setProperty('--as', tetoP+'%');
+    ab.style.setProperty('--ae', pct((g.tetoSTF||0)+now.abate)+'%');
+  }
+  var tw = track ? track.clientWidth : 0;
+  var mk=function(id,v){
+    var e=document.getElementById(id); if(!e) return;
+    e.style.setProperty('--x', (pct(v)/100*tw)+'px');
+  };
+  mk('railRGPS', g.tetoRGPS||0);
+  mk('railSTF',  g.tetoSTF||0);
+  setText('railBruto', BRL0(now.brutoFull));
+  setText('railRGPSv', BRL0(g.tetoRGPS||0));
+  setText('railSTFv',  BRL0(g.tetoSTF||0));
+}
+
+// As <option> de cargo dependem do órgão (o Conselho tem seis, a Junta tem três). O <select> em
+// si é ESTÁTICO: bind() liga o listener uma única vez no init, e recriar o elemento o deixaria
+// mudo. Só as options são reconstruídas, e só quando o órgão muda — refazê-las a cada refresh()
+// mataria o foco do teclado no meio da navegação.
+function paintCargos(){
+  var sel=$('[data-select="cargoColegiado"]'); if(!sel) return;
+  if(sel.__orgao===state.orgao) return;
+  sel.__orgao=state.orgao;
+  var org=ORGAOS[state.orgao], cargos=org?org.cargos:[];
+  sel.innerHTML=cargos.map(function(c){
+    return '<option value="'+c.id+'">'+c.rot+(c.add>0?(' — +'+Math.round(c.add*100)+'%'):'')+'</option>';
+  }).join('');
+  // Cargo que não existe neste órgão cai no membro — o mesmo que cargoAdd() faz no cálculo.
+  sel.value = cargoAdd(state.orgao,state.cargoColegiado)>0 ? state.cargoColegiado
+            : (cargos.length ? cargos[0].id : '');
+}
+
+// sync input.value / slider.value / segs with state (only on load/preset/reset)
+function syncInputs(){
+  $('[data-slider="aliqRPC"]').value=state.aliqRPC;
+  var fsel=$('[data-select="funcao"]'); if(fsel) fsel.value=state.funcao;
+  var osel=$('[data-select="orgao"]'); if(osel) osel.value=state.orgao;
+  // max ANTES do value: o <input type=range> re-saneia o próprio value quando o max encolhe
+  // (14 no Conselho, 12 na Junta).
+  var ssl=$('[data-slider="sessoes"]');
+  if(ssl){ ssl.max=orgaoMax(state.orgao)||14; ssl.value=state.sessoes; }
+  $('[data-num="priorYears"]').value=state.priorYears;
+  $('[data-num="ppeValue"]').value=state.ppeValue;
+  $('[data-slider="saudeUfir"]').value=state.saudeUfir;
+  $('[data-slider="educUfir"]').value=state.educUfir;
+  $('[data-slider="horizonte"]').value=state.horizonte;
+  $('[data-slider="horizonteC"]').value=state.horizonteC;
+  $('[data-slider="taxaRPC"]').value=state.taxaRPC;
+  $('[data-slider="taxaPropria"]').value=state.taxaPropria;
+  $('[data-slider="match"]').value=state.match;
+}
+
+// ============================================================ REFRESH (recompute + paint)
+var _lastTab=null;
+function refresh(){
+  var s=state;
+  var now=calc(buildParams(0));
+
+  syncPalette();                        // cores dos SVGs = cores do CSS, sempre
+  // Anima a entrada dos gráficos só em mudanças DISCRETAS (troca de aba, preset,
+  // toggle, tema). Durante o arrasto de um slider a atualização é instantânea:
+  // manipulação direta não pede animação, pede resposta.
+  if(_lastTab!==s.tab){ ARM=!reduceMotion(); _lastTab=s.tab; }
+
+  // toggles
+  ['reajuste','rpc','tri','ppe','moradia','saude','educacao','alim','transp','triEmProd','ppeTributada','rppsFullSemAdesao','contribCresce'].forEach(function(n){ setSw(n,s[n]); });
+  showSub('sub-rpc',s.rpc); showSub('sub-tri',s.tri); showSub('sub-ppe',s.ppe); showSub('sub-moradia',s.moradia); showSub('sub-saude',s.saude); showSub('sub-educ',s.educacao);
+  // segs
+  $$('#segClasse button').forEach(function(b){ var on=b.getAttribute('data-classe')===s.classe; b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); });
+  $$('#segConta button').forEach(function(b){ var on=(b.getAttribute('data-conta')==='sim')===s.contaAnterior; b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); });
+  $$('#segDeps button').forEach(function(b){ var on=Number(b.getAttribute('data-deps'))===Number(s.educDeps); b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); });
+  // labels under sliders
+  setText('aliqRPCval', String(s.aliqRPC).replace('.',','));
+  // função gratificada (valor no painel)
+  var fInfo=document.getElementById('funcaoInfo'), fp=funcaoPct(s.funcao);
+  if(fInfo){
+    fInfo.classList.toggle('hidden', !(fp>0));
+    if(fp>0){ setText('funcaoDescTxt', PCT(fp)); setText('funcaoValTxt', BRL0(fp*s.g.tetoSTF)); }
+  }
+  // órgão de deliberação coletiva (Dec. 50.369/2026). Nada aqui escreve no state: as sessões
+  // exibidas são as EFETIVAS (now.sessoes, já clampadas pelo calc) — a tela nunca promete uma
+  // sessão que não é paga.
+  var orgNow=ORGAOS[s.orgao];
+  showSub('sub-colegiado', !!orgNow);
+  paintCargos();
+  if(orgNow){
+    var ssl=$('[data-slider="sessoes"]');
+    if(ssl){ ssl.max=orgNow.maxSessoes; ssl.value=now.sessoes; }
+    var addNow=cargoAdd(s.orgao,s.cargoColegiado);
+    var cargoNow=orgNow.cargos[0];
+    for(var ci=0;ci<orgNow.cargos.length;ci++){ if(orgNow.cargos[ci].id===s.cargoColegiado) cargoNow=orgNow.cargos[ci]; }
+    setText('sessoesVal', now.sessoes);
+    setText('sessoesEnd', orgNow.maxSessoes+' sessões (teto)');
+    setText('colegCargoTxt', cargoNow.rot);
+    setText('colegAddTxt', addNow>0?(' · +'+PCT(addNow)+' de representação'):'');
+    setText('colegReais', BRL0(now.colegiadoVal));
+  }
+  // leituras das verbas indexadas à UFIR-RJ
+  var ufirNow=s.g.ufir||0;
+  setText('moradiaValTxt', BRL0((s.g.moradiaUfir||0)*ufirNow));
+  setText('saudeUfirVal', s.saudeUfir);
+  setText('saudeReais', BRL0(Math.min(Number(s.saudeUfir)||0,SAUDE_UFIR_MAX)*ufirNow));
+  setText('educUfirVal', s.educUfir); setText('educDepsTxt', s.educDeps);
+  setText('educReais', BRL0(Math.min(Number(s.educUfir)||0,EDUC_UFIR_MAX)*Math.min(EDUC_DEP_MAX,Number(s.educDeps)||0)*ufirNow));
+  setText('triHoje', now.trienios); setText('triFator', NUM2(now.fatTri).replace('.',','));
+  setText('horizonteVal', s.horizonte); setText('horizonteCval', s.horizonteC); setText('hcLabel', s.horizonteC);
+  setText('taxaRPCval', String(s.taxaRPC).replace('.',',')); setText('taxaPropval', String(s.taxaPropria).replace('.',',')); setText('matchval', s.match);
+  // tabs/panes
+  $$('.tab').forEach(function(b){
+    var on=b.getAttribute('data-tab')===s.tab;
+    b.classList.toggle('on', on); b.setAttribute('aria-selected', on?'true':'false');
+  });
+  $$('.tabpane').forEach(function(p){ p.classList.toggle('on', p.getAttribute('data-pane')===s.tab); });
+  // presets
+  var ap=detectPreset();
+  $$('.preset[data-preset]').forEach(function(b){ b.classList.toggle('on', Number(b.getAttribute('data-preset'))===ap); });
+  setText('scenarioTag', ap?('Cenário padrão '+ap):'Cenário personalizado');
+
+  // ---- HERO ----
+  setText('heroLabel', s.moradia?'Líquido mensal na barreira fiscal':'Líquido mensal estimado');
+  animateHero(document.getElementById('heroBig'), now.totalFinal);
+  var tag = CLASSES[now.classe].nome + (now.trienios>0?(' · '+now.trienios+' triênios'):'') + (s.funcao?(' · função '+FUNCOES[s.funcao].rot):'') + (orgNow?(' · '+orgNow.curto):'') + (s.moradia?' · inclui auxílio moradia':'');
+  setText('heroSub', 'líquido por mês · '+tag);
+  setText('panelTag', CLASSES[now.classe].nome.split(' ')[0]+' classe'+(s.rpc?' · RPC':'')+(s.reajuste?' · reajuste':''));
+  setText('heroAnual', BRL0(now.totalFinal*12));
+  setText('heroAnual13', BRL0(now.totalFinal*12 + now.totalAntes*(1+1/3)));
+  var warn=document.getElementById('heroWarn');
+  if(now.abate>0){ warn.classList.remove('hidden'); setText('heroWarnTxt','Teto constitucional (STF) atingido: abate de '+BRL(now.abate)+'/mês sobre a remuneração.'); }
+  else warn.classList.add('hidden');
+
+  // ---- RÉGUA DO TETO ----
+  paintRail(now);
+
+  // ---- KPIs ----
+  // Nenhum style="color:..." aqui: a cor vem de uma classe de tom, que lê o token
+  // do tema. Estilo inline venceria o CSS de tema e travaria o número no claro.
+  var kpis=[
+    {t:'Bruto (cargo)',        v:BRL0(now.brutoFull),  s:'vencimento + produtividade', tone:'bruto'},
+    {t:'Deduções',             v:'−'+BRL0(now.deducoes), s:'previdência + IR',        tone:'neg'},
+    {t:'Quanto sobra',         v:PCT(now.sobra),       s:'do bruto, após prev. e IR',  tone:'pos'},
+    {t:'Alíquota efetiva IR',  v:PCT(now.aliqEfIR),    s:'IR ÷ base de cálculo',       tone:'ink'},
+    {t:'Carga previdenciária', v:PCT(now.cargaPrev),   s:'previdência ÷ bruto',        tone:'ink'}
+  ];
+  document.getElementById('kpis').innerHTML = kpis.map(function(x){
+    return '<div class="kpi t-'+x.tone+'"><div class="kpi-t">'+x.t+'</div>'+
+           '<div class="num kpi-v">'+x.v+'</div><div class="kpi-s">'+x.s+'</div></div>';
+  }).join('');
+
+  // ---- WATERFALL ----
+  mountChart('chartWaterfall', waterfallSVG(now, chartW('chartWaterfall',460)));
+
+  // ---- DETALHAMENTO ----
+  var rows=[
+    {l:'Vencimento base', v:BRL(now.vb),        tone:'ink'},
+    {l:'Produtividade',   v:BRL(now.prod),      tone:'ink'},
+    {l:'Total bruto',     v:BRL(now.brutoFull), tone:'bruto', strong:true}
+  ];
+  if(now.abate>0) rows.push({l:'Abate-teto (STF)', v:'−'+BRL(now.abate), tone:'warn'});
+  rows.push({l:'RPPS (RioPrev)', v:'−'+BRL(now.rpps), tone:'neg'});
+  if(now.rjprev>0) rows.push({l:'RPC (RJPrev)', v:'−'+BRL(now.rjprev), tone:'neg'});
+  rows.push({l:'IRPF', v:'−'+BRL(now.ir), tone:'neg'});
+  if(now.alim>0) rows.push({l:'Ajuda alimentação', v:'+'+BRL(now.alim), tone:'pos'});
+  if(now.transp>0) rows.push({l:'Ajuda transporte', v:'+'+BRL(now.transp), tone:'pos'});
+  if(now.ppe>0) rows.push({l:'PPE'+(s.ppeTributada?' (tributada)':''), v:'+'+BRL(now.ppe), tone:'pos'});
+  if(now.moradia>0) rows.push({l:'Auxílio moradia', v:'+'+BRL(now.moradia), tone:'pos'});
+  if(now.funcaoVal>0) rows.push({l:'Função gratificada'+(now.funcao?' ('+FUNCOES[now.funcao].rot+')':''), v:'+'+BRL(now.funcaoVal), tone:'pos'});
+  if(now.saudeVal>0) rows.push({l:'Auxílio-saúde', v:'+'+BRL(now.saudeVal), tone:'pos'});
+  if(now.educVal>0) rows.push({l:'Auxílio-educação'+(now.educDeps>0?' ('+now.educDeps+' dep)':''), v:'+'+BRL(now.educVal), tone:'pos'});
+  if(now.colegiadoVal>0) rows.push({l:'Gratificação de presença ('+ORGAOS[now.orgao].curto+', '+now.sessoes+' sessões)', v:'+'+BRL(now.colegiadoVal), tone:'pos'});
+  rows.push({l:'Líquido final', v:BRL(now.totalFinal), tone:'pos', total:true});
+  document.getElementById('detailRows').innerHTML = rows.map(function(r){
+    return '<div class="drow t-'+r.tone+(r.total?' is-total':'')+'">'+
+           '<span class="drow-l">'+r.l+'</span><span class="num drow-v">'+r.v+'</span></div>';
+  }).join('');
+
+  // ---- FUTURO ----
+  function fut(t,when){
+    var c=calc(buildParams(t)), d=c.totalFinal-now.totalFinal;
+    var tone = t===0 ? 'bruto' : 'pos';
+    var dTone = t===0 ? 'faint' : (d>=0?'pos':'neg');
+    return '<div class="future t-'+tone+'"><div class="future-w">'+when+'</div>'+
+      '<div class="future-c">'+CLASSES[c.classe].nome+' · '+c.trienios+' triênios</div>'+
+      '<div class="num future-v">'+BRL(c.totalFinal)+'</div>'+
+      '<div class="num future-d t-'+dTone+'">'+(t===0?'ponto de partida':((d>=0?'+':'−')+BRL(Math.abs(d))+'/mês'))+'</div></div>';
+  }
+  document.getElementById('futures').innerHTML = fut(0,'Hoje')+fut(3,'Em 3 anos')+fut(6,'Em 6 anos');
+
+  // ---- PROJEÇÃO ----
+  var H=s.horizonte, years=[],brutoNom=[],brutoEf=[],liq=[],prevArr=[],irArr=[],triArr=[],patArr=[];
+  var triCum=0, pat=0;
+  for(var t=0;t<=H;t++){
+    var c=calc(buildParams(t));
+    years.push(t); brutoNom.push(c.brutoFull); brutoEf.push(c.bruto); liq.push(c.totalFinal);
+    prevArr.push(c.prevTotal); irArr.push(c.ir);
+    var pNo=buildParams(t); pNo.trienios=0; var cNo=calc(pNo);
+    var gainMo=c.totalFinal-cNo.totalFinal;
+    if(t>0){ triCum+=gainMo*12; pat+=c.totalFinal*12; }
+    triArr.push(triCum); patArr.push(pat);
+  }
+  var xticks=[]; for(var tt=0;tt<=H;tt+=Math.max(5,Math.round(H/7))) xticks.push({i:tt,label:tt+'a'});
+  var tetoY=s.g.tetoSTF, satYr=-1;
+  for(var z=0;z<=H;z++){ if(brutoNom[z]>=tetoY){ satYr=z; break; } }
+  var wProj=chartW('chartProj',760);
+  mountChart('chartProj', lineChartSVG({n:years.length,w:wProj,h:wProj<430?260:300,xticks:xticks,
+    title:'Bruto e líquido ao longo da carreira, contra o teto do STF',
+    ymax:Math.max(tetoY,Math.max.apply(null,brutoNom))*1.08,
+    series:[
+      {name:'Bruto nominal',data:brutoNom,color:C.nominal,width:1.8,dash:'6 4'},
+      {name:'Bruto efetivo',data:brutoEf,color:C.blue,width:2.6},
+      {name:'Líquido',data:liq,color:C.green,width:2.8,fillOf:C.green}
+    ], hlines:[{y:tetoY,label:'Teto STF',color:C.amber}], tipFmt:BRL0}));
+  setText('satNota', satYr>=0
+    ? ('A remuneração bruta atinge o teto do STF por volta do ano '+satYr+'.')
+    : ('Com estes parâmetros, a remuneração bruta não atinge o teto do STF em '+H+' anos.'));
+  var wDed=chartW('chartDed',760);
+  mountChart('chartDed', stackChartSVG({n:years.length,w:wDed,h:wDed<430?230:260,xticks:xticks,
+    title:'Previdência e IRPF ao longo do tempo',
+    layers:[{name:'Previdência',data:prevArr,color:C.prev},{name:'IRPF',data:irArr,color:C.red}]}));
+  var wTri=chartW('chartTri',760);
+  mountChart('chartTri', lineChartSVG({n:years.length,w:wTri,h:230,xticks:xticks,
+    title:'Ganho acumulado com triênios',
+    emptyNote:'Ligue “Triênios / ADF” no painel para ver o ganho acumulado.',
+    series:[{name:'Ganho acumulado',data:triArr,color:C.green,width:2.8,fillOf:C.green}],tipFmt:BRL0}));
+  setText('triHorizonte',H); setText('triAcum',BRL0(triCum)); setText('patHorizonte',H); setText('patTotal',K(pat));
+  var wPat=chartW('chartPat',760);
+  mountChart('chartPat', lineChartSVG({n:years.length,w:wPat,h:230,xticks:xticks,
+    title:'Líquido acumulado ao longo da carreira',
+    series:[{name:'Líquido acumulado',data:patArr,color:C.blue,width:2.8,fillOf:C.blue}],tipFmt:K}));
+
+  // ---- COMPARAÇÕES: adesão x não (líquido mensal de hoje) ----
+  var pAd=buildParams(0); pAd.rpc=true; var cAd=calc(pAd);
+  var pNo2=buildParams(0); pNo2.rpc=false; var cNo2=calc(pNo2);
+  var custoAdesao=cNo2.totalFinal-cAd.totalFinal; // quanto deixa de levar p/ casa ao aderir (já após IR)
+  setText('liqAd',BRL(cAd.totalFinal)); setText('liqNo',BRL(cNo2.totalFinal)); setText('diffAd',BRL(custoAdesao));
+
+  // ---- COMPARAÇÕES: RPC × conta própria ----
+  // Justo: aderindo, você abre mão de "custo líquido/mês" de take-home e o fundo recebe
+  // a contribuição bruta + contrapartida. Não aderindo, você guarda esse líquido e investe
+  // por conta própria (sem contrapartida e já tributado).
+  var HC=s.horizonteC, months=HC*12;
+  var rpcSched=[], ownSched=[]; // entradas mensais em cada caminho
+  for(var m=1;m<=months;m++){
+    var yt=s.contribCresce?Math.floor((m-1)/12):0;
+    var pAm=buildParams(yt); pAm.rpc=true;  var cAm=calc(pAm);
+    var pNm=buildParams(yt); pNm.rpc=false; var cNm=calc(pNm);
+    rpcSched.push(cAm.rjprev*(1+s.match/100));        // sua parte + contrapartida -> fundo
+    ownSched.push(Math.max(0, cNm.totalFinal-cAm.totalFinal)); // líquido que sobraria p/ investir
+  }
+  var iR=Math.pow(1+s.taxaRPC/100,1/12)-1, iP=Math.pow(1+s.taxaPropria/100,1/12)-1;
+  var balR=0,balP=0, rpcArr=[0],ownArr=[0];
+  for(var mm=0;mm<months;mm++){ balR=balR*(1+iR)+rpcSched[mm]; balP=balP*(1+iP)+ownSched[mm]; if((mm+1)%12===0){ rpcArr.push(balR); ownArr.push(balP); } }
+  var xticksC=[]; for(var xc=0;xc<=HC;xc+=Math.max(5,Math.round(HC/7))) xticksC.push({i:xc,label:xc+'a'});
+  var wRpc=chartW('chartRpc',760);
+  mountChart('chartRpc', lineChartSVG({n:HC+1,w:wRpc,h:wRpc<430?250:280,xticks:xticksC,
+    title:'Patrimônio acumulado: RPC contra investimento próprio',
+    series:[{name:'Aderindo (RPC)',data:rpcArr,color:C.green,width:2.8,fillOf:C.green},
+            {name:'Conta própria',data:ownArr,color:C.blue,width:2.4,dash:'6 4'}],tipFmt:K}));
+  var rpcFinalV=rpcArr[rpcArr.length-1], propFinalV=ownArr[ownArr.length-1];
+  var beRate=breakeven(ownSched, rpcFinalV);
+  var beTxt = beRate>=0.599 ? 'acima de 60%' : PCT(beRate)+' ao ano';
+  setText('rpcFinal',K(rpcFinalV)); setText('propFinal',K(propFinalV)); setText('breakeven', beRate>=0.599?'> 60%':PCT(beRate));
+  var custoNow=ownSched[0]||0;
+  setText('rpcConclusao','Aderir reduz seu líquido em cerca de '+BRL(custoNow)+' por mês hoje. Em troca, essa contribuição rende mais: ganha contrapartida de '+s.match+'% do Estado e ainda abate IR. Para igualar o fundo do RPC investindo por conta própria o valor líquido equivalente (sem contrapartida), você precisaria render '+beTxt+' — contra os '+String(s.taxaRPC).replace('.',',')+'% do fundo.');
+
+  // ---- líquido por classe ----
+  // barras "apagadas" (outras classes / parâmetros desligados) recebem um tom de
+  // preenchimento fraco, mas o RÓTULO precisa de contraste AA: usa o tom de texto.
+  var classeItems=['3','2','1'].map(function(cc){ var p=buildParams(0); p.classe=cc;
+    var cur=cc===s.classe;
+    return {label:CLASSES[cc].nome.split(' ')[0], value:calc(p).totalFinal,
+            color: cur?C.green:C.alt, tcolor: cur?C.green:C.soft}; });
+  mountChart('chartClasse', barChartSVG(classeItems,{w:chartW('chartClasse',420),h:240,horiz:false,title:'Líquido mensal em cada classe'}));
+
+  // ---- impacto marginal ----
+  function diff(mut){ var p=buildParams(0); mut(p); return calc(p).totalFinal; }
+  var marg=[
+    {label:'Reajuste', value: now.totalFinal-diff(function(p){p.reajuste=false;}), on:s.reajuste},
+    {label:'Triênios', value: now.totalFinal-diff(function(p){p.trienios=0;}), on:s.tri},
+    {label:'RPC', value: cAd.totalFinal-cNo2.totalFinal, on:s.rpc},
+    {label:'PPE', value: now.ppe, on:s.ppe},
+    {label:'Ajudas', value: now.alim+now.transp, on:s.alim||s.transp},
+    {label:'Moradia', value: now.moradia, on:s.moradia},
+    {label:'Função', value: now.funcaoVal, on:!!s.funcao},
+    {label:'Saúde', value: now.saudeVal, on:s.saude},
+    {label:'Educação', value: now.educVal, on:s.educacao},
+    {label:'Presença', value: now.colegiadoVal, on:!!ORGAOS[s.orgao]}
+  ].map(function(it){
+    var col = it.on ? (it.value>=0?C.green:C.red) : C.off;
+    return {label:it.label, value:it.value, color:col, tcolor: it.on?col:C.faint};
+  });
+  mountChart('chartMarginal', barChartSVG(marg,{w:chartW('chartMarginal',860),h:260,vfmt:BRLdelta,
+    title:'Impacto marginal de cada parâmetro no líquido'}));
+
+  // ---- GLOBALS DRAWER ----
+  paintGlobals();
+
+  ARM=false;                            // a próxima pintura só anima se for pedida
+  persist();
+}
+
+// ---- static content: tutorial / glossary / premissas / chart guide ----
+function paintStatic(){
+  var steps=[
+    {n:1,t:'Escolha um cenário padrão',d:'Os 4 botões no topo reproduzem os cenários da planilha-fonte: com/sem o reajuste de 11,56% e com/sem triênios. Use-os como ponto de partida.'},
+    {n:2,t:'Personalize para o seu caso',d:'No painel da esquerda, ajuste classe, adesão ao RPC e a alíquota, triênios/ADF (informando seu tempo de serviço anterior), PPE, auxílio moradia, os auxílios saúde e educação (Res. SEFAZ 895/2026), a função gratificada da Resolução 874/2026 (se ocupar chefia/assessoramento/direção) e, se for membro do Conselho de Contribuintes ou da Junta de Revisão Fiscal, a gratificação de presença por sessão.'},
+    {n:3,t:'Leia o resultado',d:'O cartão superior mostra o líquido mensal; o gráfico "do bruto ao líquido" e o detalhamento explicam cada dedução e acréscimo. Os KPIs resumem a carga tributária.'},
+    {n:4,t:'Olhe para o futuro',d:'A aba Projeção mostra a remuneração ao longo da carreira, a saturação no teto do STF, as deduções e o ganho acumulado com triênios.'},
+    {n:5,t:'Compare decisões',d:'Na aba Comparações, veja se vale aderir ao RPC, o líquido por classe e o impacto de cada parâmetro. Use "Compartilhar" para gerar um link com o seu cenário ou "Exportar PDF".'}
+  ];
+  document.getElementById('tutSteps').innerHTML = steps.map(function(x){
+    return '<div class="step"><div class="num n">'+x.n+'</div><div><div class="t">'+x.t+'</div><div class="d">'+x.d+'</div></div></div>';
+  }).join('');
+
+  var guides=[
+    {t:'Do bruto ao líquido (cascata)',d:'Mostra, passo a passo, como o salário bruto vira o líquido: cada barra vermelha é um desconto (previdência, IR) e cada verde é um acréscimo (ajudas, PPE).'},
+    {t:'Visão do futuro',d:'Projeta o líquido em 3 e 6 anos, quando você progride de classe, mantendo seus parâmetros.'},
+    {t:'Ponto de saturação',d:'Compara o bruto "de direito" (tracejado) com o efetivamente pago (cheio). Quando se separam, você bateu o teto do STF e o líquido para de crescer.'},
+    {t:'Deduções no tempo',d:'Área empilhada de previdência + IR ao longo dos anos. Quanto mais você ganha, maior a fatia do IR.'},
+    {t:'Ganho acumulado com triênios',d:'Soma todo o dinheiro extra que os triênios trouxeram até cada ano.'},
+    {t:'Patrimônio de carreira',d:'Soma o líquido recebido ano a ano — dá a dimensão financeira total da carreira.'},
+    {t:'RPC × conta própria',d:'Compara acumular no fundo RPC (com contrapartida do Estado) versus investir sozinho a sua parte. O "ponto de empate" diz qual taxa própria igualaria o RPC.'},
+    {t:'Impacto marginal',d:'Quanto cada parâmetro (reajuste, triênios, RPC...) soma ao seu líquido isoladamente.'}
+  ];
+  document.getElementById('chartGuide').innerHTML = guides.map(function(g){ return '<div><div class="cgt">'+g.t+'</div><div class="cgd">'+g.d+'</div></div>'; }).join('');
+
+  var glos=[
+    {t:'RPPS / RioPrev',d:'Regime próprio de previdência. Para quem entrou após a criação do RJPrev, a contribuição de 14% é limitada ao teto do RGPS — aderindo ou não ao RPC.'},
+    {t:'RPC / RJPrev',d:'Previdência complementar opcional. Incide sobre o que excede o teto do RGPS (alíquota de 5,5% a 8,5%), com contrapartida do Estado. Aderir reduz o líquido de hoje, mas constrói um fundo só seu.'},
+    {t:'Triênio / ADF',d:'Adicional por tempo de serviço: 1º triênio +10%, demais +5% cada, somando no máximo 60%; incide sobre VB + produtividade (ajustável). Para o novo auditor (ingresso após 06/10/2021), o triênio tradicional foi extinto pela LC 194/2021 e substituído pelo Adicional de Desenvolvimento Funcional — ADF (LC 230/2026 + Decreto 50.356/2026), com os mesmos percentuais, porém condicionado a avaliação de desempenho, capacitação (120h) e disciplina a cada triênio. Financeiramente, o cálculo é o mesmo modelado aqui.'},
+    {t:'UFIR-RJ',d:'Unidade Fiscal de Referência do RJ, que indexa diversas verbas. Em 2026 vale R$ 4,9604 (Res. SEFAZ 849/2025) e acompanha o IPCA. Alimentação (450 UFIR), transporte (650 UFIR), moradia (1.500 UFIR) e os auxílios saúde e educação são calculados em UFIR × valor da UFIR.'},
+    {t:'PPE',d:'Prêmio de produtividade — valor variável. Por padrão somado líquido (ajustável para tributar).'},
+    {t:'Verbas indenizatórias',d:'Ajudas de custo (alimentação, transporte), auxílio moradia e os auxílios saúde/educação: não sofrem IR nem previdência, não entram no teto nem na base de 13º/férias. Hoje indexadas à UFIR-RJ.'},
+    {t:'Auxílio-saúde (Res. 895/2026)',d:'Reembolso de despesas de saúde (plano, consultas, exames) até 300 UFIR-RJ/mês (≈ R$ 1.488), mediante comprovação. É global — independe do número de dependentes. Indenizatório, sem IR nem previdência.'},
+    {t:'Auxílio-educação (Res. 895/2026)',d:'Reembolso de mensalidade escolar/creche até 500 UFIR-RJ por dependente/mês (≈ R$ 2.480), limitado a 3 dependentes, mediante comprovação. Indenizatório, sem IR nem previdência.'},
+    {t:'Função gratificada (Res. 874/2026)',d:'Gratificação por exercer chefia, assessoramento ou direção. Vale um % do teto (subsídio do STF): Tipo I 30%, II 27%, III 23,5% e IV 20%. É paga acima do teto, indenizatória — sem IR nem previdência. Só uma por vez (não acumulam entre si).'},
+    {t:'Gratificação de presença (Dec. 50.369/2026)',d:'Paga por sessão REALIZADA em órgão de deliberação coletiva: 250 UFIR-RJ (≈ R$ 1.240,10) no Conselho de Contribuintes e na Representação da Fazenda, até 14 sessões/mês; 100 UFIR-RJ (≈ R$ 496,04) na Junta de Revisão Fiscal, até 12. Quem preside ou secretaria recebe um acréscimo de representação sobre ela (no Conselho: Presidente +40%, Presidentes de Câmara e Representante Geral da Fazenda +20%, Secretário-Geral +10%, Secretários de Câmara +5%; na Junta: Presidente de Turma +20%, Secretário de Turma +5%). O Estatuto veda participar de mais de um órgão (art. 170), mas a gratificação acumula com quaisquer outras vantagens (art. 171), inclusive com a função gratificada. Indenizatória: sem IR nem previdência. Quem é membro nato de mais de um colegiado opta pela de maior valor.'},
+    {t:'Teto do STF',d:'Limite constitucional da remuneração. Pela reforma tributária, passa a ser a referência para os auditores.'}
+  ];
+  document.getElementById('glos').innerHTML = glos.map(function(g){ return '<div><div class="gt">'+g.t+'</div><div class="gd">'+g.d+'</div></div>'; }).join('');
+
+  var prem=[
+    {t:'Bruto',d:'Vencimento base + produtividade, multiplicados por reajuste e fator de triênios quando habilitados.'},
+    {t:'IRPF',d:'Tabela progressiva mensal de 2026; base = bruto − previdências. Método da parcela a deduzir. Sem dependentes.'},
+    {t:'Teto RGPS 2026',d:'R$ 8.475,55 (Portaria Interministerial MPS/MF nº 13/2026).'},
+    {t:'Abate-teto',d:'Quando o bruto supera o teto do STF, o excedente é abatido (gera a saturação na projeção).'},
+    {t:'Função gratificada',d:'% do teto STF (Res. SEFAZ 874/2026): I 30%, II 27%, III 23,5%, IV 20%. Extra-teto e indenizatória — sem IR nem previdência; não acumula com outra função.'},
+    {t:'UFIR-RJ 2026',d:'R$ 4,9604 (Res. SEFAZ 849/2025, vigente 01/01/2026). Indexa alimentação (450 UFIR = R$ 2.232,18), transporte (650 UFIR = R$ 3.224,26) e moradia (1.500 UFIR = R$ 7.440,60). Editável nas variáveis globais.'},
+    {t:'Auxílios saúde e educação (Res. 895/2026)',d:'Reembolso por comprovação: saúde até 300 UFIR/mês (global); educação até 500 UFIR/dep por mês (até 3 dependentes). Indenizatórios, extra-teto, sem IR nem previdência, fora da base de 13º/férias. Padrão = teto; ajuste conforme a comprovação.'},
+    {t:'Gratificação de presença em colegiado',d:'Sessões realizadas × valor da sessão em UFIR × (1 + acréscimo de representação do cargo). Tetos mensais de sessões: 14 no Conselho de Contribuintes e 12 na Junta de Revisão Fiscal (Dec. 50.369/2026, que deu redação nova ao caput do art. 1º dos Decretos 12.936/1989 e 41.904/2009; os acréscimos de representação vêm do parágrafo único de cada um, não revogado). Indenizatória: entra no líquido depois do IR, sem previdência, fora do abate-teto e da base de 13º/férias. Um órgão por vez (Estatuto, art. 170), mas acumulável com todas as demais vantagens (art. 171). Os valores por sessão são editáveis nas variáveis globais. Nas projeções, assume-se o número de sessões constante ao longo da carreira.'},
+    {t:'Triênio / ADF',d:'Modelado como 1º +10%, demais +5%, teto 60%, sobre VB + produtividade. Para o novo auditor é o ADF (LC 230/2026, Decreto 50.356/2026), com o mesmo cálculo, porém condicionado a desempenho, capacitação e disciplina.'},
+    {t:'Acúmulo RPC',d:'Capitalização mensal de contribuição + contrapartida à taxa do fundo. A contribuição pode crescer com a carreira.'},
+    {t:'Fonte',d:'Planilhas do projeto, Res. SEFAZ 895/2026 e legislação vigente. Estimativa — confirme no contracheque.'}
+  ];
+  document.getElementById('premissas').innerHTML = prem.map(function(g){ return '<div><div class="gt">'+g.t+'</div><div class="gd">'+g.d+'</div></div>'; }).join('');
+}
+
+function paintGlobals(){
+  var G=state.g;
+  var defs=[
+    {key:'tetoSTF',label:'Teto constitucional (subsídio STF)',unit:'R$',step:1,hint:'remuneração'},
+    {key:'tetoRGPS',label:'Teto do RGPS (base RioPrev)',unit:'R$',step:0.01,hint:'2026'},
+    {key:'aliqRIOPREV',label:'Alíquota RPPS (RioPrev)',unit:'',step:0.01,hint:'fração: 0,14'},
+    {key:'reajuste',label:'Reajuste 2026',unit:'',step:0.0001,hint:'fração: 0,1156'},
+    {key:'ufir',label:'UFIR-RJ (2026)',unit:'R$',step:0.0001,hint:'Res. SEFAZ 849/2025'},
+    {key:'alimUfir',label:'Alimentação (em UFIR)',unit:'',step:1,hint:'× UFIR = R$/mês'},
+    {key:'transpUfir',label:'Transporte (em UFIR)',unit:'',step:1,hint:'× UFIR = R$/mês'},
+    {key:'moradiaUfir',label:'Moradia / barreira (em UFIR)',unit:'',step:1,hint:'× UFIR = R$/mês'},
+    {key:'ccSessaoUfir',label:'Sessão · Conselho de Contribuintes (em UFIR)',unit:'',step:1,hint:'Dec. 50.369/2026'},
+    {key:'jrfSessaoUfir',label:'Sessão · Junta de Revisão Fiscal (em UFIR)',unit:'',step:1,hint:'Dec. 50.369/2026'},
+    {key:'ppe',label:'PPE padrão',unit:'R$',step:0.01,hint:'média'}
+  ];
+  var host=document.getElementById('globalFields');
+  // build once, then just update values
+  if(!host.__built){
+    host.innerHTML = defs.map(function(d){
+      return '<div class="gfield"><div class="gl"><label>'+d.label+'</label><span class="gh">'+d.hint+'</span></div>'+
+        '<div class="money"><span class="cur" style="width:18px">'+d.unit+'</span>'+
+        '<input class="inp" type="number" step="'+d.step+'" data-global="'+d.key+'" value="'+G[d.key]+'"></div></div>';
+    }).join('');
+    host.__built=true;
+    $$('[data-global]',host).forEach(function(inp){
+      inp.addEventListener('input', function(){ var v=parseFloat(inp.value); state.g[inp.getAttribute('data-global')]= isNaN(v)?0:v; refresh(); });
+    });
+  } else {
+    $$('[data-global]',host).forEach(function(inp){ var k=inp.getAttribute('data-global'); if(document.activeElement!==inp) inp.value=G[k]; });
+  }
+}
+
+// ============================================================ EVENTS
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); },1900); }
+function share(){
+  try{
+    var enc=btoa(unescape(encodeURIComponent(JSON.stringify(slim()))));
+    var url=location.href.split('#')[0]+'#s='+enc;   // funciona em http(s) e file://
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(function(){ toast('🔗 Link copiado!'); },function(){ toast('🔗 Link gerado na barra de endereço'); });
+    } else { toast('🔗 Link gerado na barra de endereço'); }
+    try{ history.replaceState(null,'','#s='+enc); }catch(e){}
+  }catch(e){ toast('Não foi possível gerar o link'); }
+}
+
+function bind(){
+  // arma a animação de entrada dos gráficos em ações DISCRETAS (não em arrasto)
+  function arm(){ if(!reduceMotion()) ARM=true; }
+  // delegated clicks
+  document.addEventListener('click', function(e){
+    var el=e.target.closest('[data-act],[data-tab],[data-preset],[data-toggle],[data-classe],[data-conta],[data-deps]'); if(!el) return;
+    if(el.hasAttribute('data-toggle')){ var n=el.getAttribute('data-toggle'); state[n]=!state[n]; arm(); refresh(); return; }
+    if(el.hasAttribute('data-tab')){ state.tab=el.getAttribute('data-tab'); refresh(); return; }
+    if(el.hasAttribute('data-preset')){ arm(); applyPreset(Number(el.getAttribute('data-preset'))); return; }
+    if(el.hasAttribute('data-classe')){ state.classe=el.getAttribute('data-classe'); arm(); refresh(); return; }
+    if(el.hasAttribute('data-conta')){ state.contaAnterior=(el.getAttribute('data-conta')==='sim'); arm(); refresh(); return; }
+    if(el.hasAttribute('data-deps')){ state.educDeps=Number(el.getAttribute('data-deps')); arm(); refresh(); return; }
+    var act=el.getAttribute('data-act');
+    if(act==='togglePanel'){ var pn=document.getElementById('panel'); var op=pn.classList.toggle('open'); el.setAttribute('aria-expanded',op?'true':'false'); return; }
+    if(act==='theme'){ setTheme(themeNow()==='dark'?'light':'dark'); return; }
+    if(act==='openGlobals'){ document.getElementById('drawer').classList.remove('hidden'); }
+    if(act==='closeGlobals'){ document.getElementById('drawer').classList.add('hidden'); }
+    if(act==='resetGlobals'){ state.g=Object.assign({},DEFAULTS); arm(); refresh(); toast('Variáveis globais restauradas'); }
+    if(act==='reset'){ var g=state.g; Object.assign(state,DEFAULT_STATE); state.g=g; state.tab='calc'; syncInputs(); arm(); refresh(); toast('Parâmetros resetados'); }
+    if(act==='share'){ share(); }
+    if(act==='pdf'){ window.print(); }
+  });
+  // sliders
+  $$('[data-slider]').forEach(function(inp){
+    inp.addEventListener('input', function(){ var key=inp.getAttribute('data-slider'); var v=parseFloat(inp.value); state[key]=v; refresh(); });
+  });
+  // selects
+  $$('[data-select]').forEach(function(sel){
+    sel.addEventListener('change', function(){
+      var key=sel.getAttribute('data-select');
+      state[key]=sel.value;
+      // Trocar de órgão reinicia cargo e sessões: cada colegiado tem sua própria tabela de
+      // cargos e seu teto de sessões (14 no Conselho, 12 na Junta). Sem isto, 'Presidente do
+      // Conselho' sobreviveria na Junta, onde ele não existe.
+      // Este é o ÚNICO ponto que normaliza o state — e roda só na interação humana. O calc()
+      // clampa por conta própria, então um link #s= continua chegando intacto ao state (é o que
+      // o canário de semeadura do harness exige).
+      if(key==='orgao'){
+        var mx=orgaoMax(sel.value);
+        if(mx) state.sessoes=Math.min(Number(state.sessoes)||0, mx);
+        state.cargoColegiado='membro';
+        syncInputs();
+      }
+      refresh();
+    });
+  });
+  // number inputs
+  $$('[data-num]').forEach(function(inp){
+    inp.addEventListener('input', function(){ var key=inp.getAttribute('data-num'); var v=parseFloat(inp.value); if(key==='priorYears') v=Math.max(0,parseInt(inp.value)||0); state[key]= isNaN(v)?0:v; refresh(); });
+  });
+  // esc closes drawer
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') document.getElementById('drawer').classList.add('hidden'); });
+
+  // Os SVGs são gerados na largura real do container: ao redimensionar, é preciso
+  // redesenhar, senão os rótulos escalam junto e a tipografia perde o tamanho.
+  var rt=null, lastW=window.innerWidth;
+  window.addEventListener('resize', function(){
+    measureHeader();
+    if(Math.abs(window.innerWidth-lastW)<12) return;
+    lastW=window.innerWidth;
+    clearTimeout(rt); rt=setTimeout(refresh,150);
+  });
+}
+
+// ---- impressão ----
+// As cores dos SVGs são atributos assados na string: o @media print reescreve os
+// tokens do CSS, mas não o que já foi desenhado. Então, ao imprimir, forçamos o tema
+// claro e re-renderizamos — senão o PDF sai com as linhas do tema escuro no papel
+// branco. Cobre tanto o botão "Exportar PDF" quanto o Ctrl+P.
+var _printPrev=null;
+function bindPrint(){
+  window.addEventListener('beforeprint', function(){
+    _printPrev=document.documentElement.getAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme','light');
+    syncPalette(); ARM=false; refresh();
+  });
+  window.addEventListener('afterprint', function(){
+    if(_printPrev) document.documentElement.setAttribute('data-theme',_printPrev);
+    else document.documentElement.removeAttribute('data-theme');
+    syncPalette(); refresh();
+  });
+}
+
+// a régua e o painel sticky dependem da altura real do cabeçalho
+function measureHeader(){
+  var h=document.querySelector('header');
+  if(h) document.documentElement.style.setProperty('--hd-h', h.offsetHeight+'px');
+}
+
+// ============================================================ INIT
+loadState();
+sanitizeState();   // o que veio do hash/localStorage não é confiável — ver acima
+syncPalette();
+watchTheme();
+bindPrint();
+paintStatic();
+bind();
+syncInputs();
+measureHeader();
+ARM=!reduceMotion();          // a primeira pintura entra desenhando
+refresh();
+// as fontes chegam depois do primeiro paint e mudam a métrica dos rótulos SVG
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ measureHeader(); refresh(); }); }
+})();
+</script>
+</body>
+</html>
