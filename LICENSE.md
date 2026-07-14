@@ -30,7 +30,7 @@ A proteção independe de registro (art. 2º, § 3º, da Lei nº 9.609/1998).
 **NÃO coberto por esta licença** (ver [`NOTICE.md`](NOTICE.md)):
 
 - **`legacy/prototipo-dc/`** — contém `support.js`, um *runtime* empacotado de terceiros cuja titularidade e licença **não foram determinadas**. O autor **não** o licencia, **não** reivindica direitos sobre ele e **não** autoriza sua redistribuição. Essa pasta é memória histórica do projeto e **não deve ser publicada**.
-- **`fontes/`** — legislação, atos oficiais e planilhas de trabalho. Atos oficiais **não são objeto de proteção autoral** (art. 8º, IV, da Lei nº 9.610/1998). A procedência de cada arquivo está em [`fontes/README.md`](fontes/README.md).
+- **`fontes/`** — legislação, atos oficiais e planilhas de trabalho. Atos oficiais **não são objeto de proteção autoral** (art. 8º, IV, da Lei nº 9.610/1998). 
 - **Fontes tipográficas** (Bricolage Grotesque, IBM Plex Sans, IBM Plex Mono) — apenas **referenciadas** a partir do serviço Google Fonts, nunca redistribuídas. Pertencem a seus titulares, sob a licença SIL Open Font License 1.1.
 
 ## 3. Concessão de licença
