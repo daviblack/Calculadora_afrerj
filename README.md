@@ -216,29 +216,7 @@ Tem uma sugestão? Veja [como contribuir](#-como-contribuir--sugerir-melhorias).
 
 ---
 
-## 📂 Estrutura do repositório
 
-```
-Calculadora-Remuneracao-AFRE-RJ.html   ← A FERRAMENTA (é só isto que você precisa)
-README.md                              ← este arquivo
-CHANGELOG.md                           ← histórico de versões
-
-docs/      documentação técnica (modelo de cálculo, decisões, sistema de design)
-fontes/    a planilha-fonte e a legislação que embasa cada verba
-legacy/    versões anteriores e variações de design aposentadas
-tests/     harness de validação (paridade com a planilha, contrato, fiação)
-shots/     screenshots (regeneráveis; fora do controle de versão)
-```
-
-| Caminho | Descrição |
-|---|---|
-| **`Calculadora-Remuneracao-AFRE-RJ.html`** | **A ferramenta.** App standalone — um único arquivo, sem dependências. É o único que você precisa baixar. |
-| [`CHANGELOG.md`](CHANGELOG.md) | Histórico de versões (SemVer) e o procedimento de lançamento. |
-| [`docs/RESUMO-PROJETO.md`](docs/RESUMO-PROJETO.md) | Contexto técnico: modelo de cálculo, validações e o log de decisões (por que cada escolha foi feita). |
-| [`docs/DESIGN.md`](docs/DESIGN.md) | Sistema de design: paleta, tipografia, movimento e as armadilhas de cor do projeto. |
-| [`fontes/`](fontes/) | A **planilha-fonte** (a "verdade" do modelo) e a legislação: Res. SEFAZ 874/2026 (função gratificada), Res. 895/2026 (auxílios saúde e educação), LC 230/2026 + Decreto 50.356/2026 (ADF) e a UFIR-RJ 2026. |
-| [`legacy/`](legacy/) | Versões aposentadas e as variações de design não escolhidas. Nada aqui é mantido. |
-| [`tests/`](tests/) | O harness. Garante a **paridade R$ 0,00** do motor com a planilha e mede o cálculo contra a lei. Ver [`tests/README.md`](tests/README.md). |
 
 ---
 
