@@ -32,7 +32,7 @@ A ferramenta foi idealizada **com a melhor das intenções**, para servir de apo
 - [Tutorial completo de uso](#-tutorial-completo-de-uso)
 - [Como funciona o cálculo](#-como-funciona-o-cálculo-resumo)
 - [Premissas e simplificações adotadas](#-premissas-e-simplificações-adotadas)
-- [Histórico de versões (Changelog)](#-histórico-de-versões-changelog)
+- [Histórico de versões](#-histórico-de-versões)
 - [Roadmap — próximos passos](#-roadmap--próximos-passos)
 - [Estrutura do repositório](#-estrutura-do-repositório)
 - [Como contribuir / sugerir melhorias](#-como-contribuir--sugerir-melhorias)
@@ -58,6 +58,8 @@ A calculadora é um **aplicativo web standalone** (um único arquivo HTML, sem d
 - ✅ **Premissas avançadas** ajustáveis por *toggles* (ex.: triênio sobre produtividade, PPE tributada) — nunca alteradas silenciosamente.
 - ✅ **Variáveis globais editáveis** (tetos, alíquotas, reajuste) para o caso de a legislação mudar.
 - ✅ **Gráficos interativos** (SVG, com *hover*) e caixas **"Como ler"** em cada um.
+- ✅ **Régua dos tetos** no topo: mostra onde o seu bruto cai entre o **teto do RGPS** (onde a previdência para) e o **teto do STF** (onde o abate começa).
+- ✅ **Modo escuro**, acompanhando o sistema ou alternável no cabeçalho.
 - ✅ **Compartilhar** o cenário por link e **Exportar PDF**.
 - ✅ Salva seus parâmetros no navegador (localStorage), funciona **offline** e é **responsivo** (celular e desktop), com cuidados de **acessibilidade**.
 
@@ -192,49 +194,11 @@ Para manter a ferramenta **simples, viável e didática**, foram adotadas as seg
 
 ---
 
-## 🗒️ Histórico de versões (Changelog)
+## 🗒️ Histórico de versões
 
-O versionamento segue o padrão **[SemVer](https://semver.org/lang/pt-BR/)** (`MAJOR.MINOR.PATCH`). As entradas mais recentes ficam no topo.
+**Versão atual: `v3.0.0`** — redesenho completo da interface, modo escuro e régua dos tetos. Sem mudança no cálculo: o motor (bruto, previdências e IRPF) reproduz a planilha-fonte com **diferença de R$ 0,00** nos 4 cenários padrão, até a última casa decimal. O líquido final fica **R$ 2.573,84 acima** do da planilha porque a Res. SEFAZ 895/2026 reindexou alimentação e transporte à UFIR-RJ — atualização legal, não regressão.
 
-### v2.2.0 — 10/07/2026 · *atual* 🎉
-**UFIR-RJ como variável global, auxílios saúde e educação (Res. SEFAZ 895/2026) e reindexação das verbas indenizatórias.**
-- ➕ Nova **variável global UFIR-RJ** (2026 = **R$ 4,9604**, Res. SEFAZ nº 849/2025), editável no drawer, que passa a indexar as verbas.
-- 🩺 Novo **Auxílio-Saúde** (Res. SEFAZ nº 895/2026): reembolso de até **300 UFIR-RJ/mês** (≈ R$ 1.488,12), **global** (independe de dependentes), ajustável por comprovação — padrão no teto. Indenizatório, extra-teto, sem IR nem previdência.
-- 🎓 Novo **Auxílio-Educação** (Res. SEFAZ nº 895/2026): reembolso de até **500 UFIR-RJ por dependente/mês** (≈ R$ 2.480,20), limitado a **3 dependentes**, ajustável por comprovação — padrão no teto. Mesma natureza indenizatória.
-- 🔄 **Alimentação, transporte e moradia reindexados à UFIR-RJ**: alimentação **450 UFIR** (R$ 2.232,18), transporte **650 UFIR** (R$ 3.224,26) e moradia **1.500 UFIR** (R$ 7.440,60). Mudar a UFIR recalcula todas de uma vez. *(Isso eleva o líquido dos 4 cenários padrão em +R$ 2.573,84 vs. a v2.1.0 — atualização legal, não regressão.)*
-- 🧾 **Nota didática do ADF**: para o novo auditor (ingresso após 06/10/2021), o triênio tradicional foi extinto pela LC 194/2021 e substituído pelo **Adicional de Desenvolvimento Funcional — ADF** (LC 230/2026 + Decreto 50.356/2026), com o **mesmo cálculo** já modelado (1º +10%, demais +5%, teto 60%), porém condicionado a desempenho/capacitação/disciplina. Sem mudança no cálculo.
-- ✅ **Sem regressão no núcleo**: os auxílios entram como acréscimo indenizatório no fim da cascata (como a função gratificada), sem tocar em IR, previdência, abate-teto nem na base de 13º/férias. Cálculos revalidados via Node.
-
-### v2.1.0 — 30/06/2026
-**Função gratificada de chefia/assessoramento/direção (Resolução SEFAZ 874/2026).**
-- ➕ Novo parâmetro **"Função de chefia / assessoramento / direção"** no painel: seletor dos **4 tipos** da Resolução SEFAZ nº 874/2026 (regulamenta o art. 8º da LC nº 226/2025), cada um aplicando seu percentual do teto do STF — **I 30%, II 27%, III 23,5%, IV 20%**.
-- 🧾 Modelada como parcela **extra-teto e indenizatória** (sem IR, sem previdência, fora do abate-teto) e **não acumulável** entre si — entra como acréscimo direto no líquido, refletido no detalhamento, na cascata, no impacto marginal e na projeção de carreira.
-- ✅ **Sem regressão**: os 4 cenários padrão continuam idênticos à planilha-fonte (diferença R$ 0,00) — a novidade não altera a cascata já validada.
-
-### v2.0.0 — 30/06/2026
-**Reescrita como app standalone e correção do modelo previdenciário.**
-- ♻️ **Reescrita completa** para um app **standalone de 1 arquivo** (HTML + JavaScript puro + SVG), **sem frameworks nem CDN** — abre offline por duplo clique e é publicável em qualquer lugar.
-- 🛠️ **Correção do modelo RPPS/RPC**: o RPPS passa a ser **sempre limitado ao teto do RGPS** (aderindo ou não ao RPC), conforme a EC 103/2019. Aderir ao RPC agora **reduz** o líquido de hoje (contribuição complementar com contrapartida), em vez de aumentá-lo. O comportamento antigo da planilha ficou preservado como *toggle* avançado.
-- ✨ **Camada de polish**: animação de contagem no valor principal, acentos e *hover* nos cartões/KPIs, brilho no cabeçalho.
-- 📱 **Painel de parâmetros colapsável no celular**, priorizando o resultado na tela.
-- 📊 Gráfico de saturação passa a mostrar **bruto efetivo + nominal + teto**, evidenciando o abate-teto.
-
-### v1.1.0
-**Premissas revisáveis e comparações mais realistas.**
-- 🔀 Premissas discutíveis viram ***toggles*** (triênio sobre produtividade, PPE tributada), com padrão igual à planilha — sem correção silenciosa.
-- 🏠 **Auxílio moradia unificado** em um único controle (antes havia dois controles que se anulavam).
-- 📈 **Comparação RPC × conta própria** simulada **mês a mês**, com contribuição que cresce ao longo da carreira.
-
-### v1.0.0
-**Primeiro app standalone.**
-- 🚀 Primeira versão em arquivo único (HTML + JS puro + SVG) com as abas **Calculadora**, **Projeção no tempo**, **Comparações** e **Como usar**.
-- 🎯 **4 cenários padrão**, validados contra a planilha-fonte (diferença R$ 0,00).
-- 💾 Persistência no navegador, link de compartilhamento e exportação em PDF.
-
-### v0.1.0 — *protótipo*
-- 🧪 Protótipo inicial da calculadora (formato Claude Design / React), usado para validar o modelo de cálculo contra a planilha. Preservado no histórico, não mais em uso.
-
-> **Para mantenedores:** ao lançar uma nova versão, adicione uma entrada no topo desta seção, incremente o número conforme o SemVer (correção → PATCH, novidade compatível → MINOR, mudança que altera resultados/comportamento → MAJOR) e descreva o que mudou.
+📄 **O histórico completo está em [`CHANGELOG.md`](CHANGELOG.md)** — todas as versões, da v0.1.0 até hoje, com o que mudou em cada uma e por quê.
 
 ---
 
@@ -254,14 +218,27 @@ Tem uma sugestão? Veja [como contribuir](#-como-contribuir--sugerir-melhorias).
 
 ## 📂 Estrutura do repositório
 
-| Arquivo | Descrição |
+```
+Calculadora-Remuneracao-AFRE-RJ.html   ← A FERRAMENTA (é só isto que você precisa)
+README.md                              ← este arquivo
+CHANGELOG.md                           ← histórico de versões
+
+docs/      documentação técnica (modelo de cálculo, decisões, sistema de design)
+fontes/    a planilha-fonte e a legislação que embasa cada verba
+legacy/    versões anteriores e variações de design aposentadas
+tests/     harness de validação (paridade com a planilha, contrato, fiação)
+shots/     screenshots (regeneráveis; fora do controle de versão)
+```
+
+| Caminho | Descrição |
 |---|---|
-| **`Calculadora-Remuneracao-AFRE-RJ.html`** | **A ferramenta.** App standalone — é o único arquivo necessário para usar. |
-| `RESUMO-PROJETO.md` | Documento técnico de contexto: modelo de cálculo, validações e log de decisões. |
-| `Remuneracao_AFRE-RJ.xlsx` | Planilha-fonte que serviu de "verdade" do modelo. |
-| `RESOLUÇÃO SEFAZ Nº 874 ... .pdf` | Fonte legal da **função gratificada** (percentuais por tipo de chefia/assessoramento/direção). |
-| `novos beneficios 07-2026/` | Fontes legais de 2026: **Res. SEFAZ 895/2026** (auxílios saúde e educação), **LC 230/2026 + Decreto 50.356/2026** (ADF) e planilha de vantagens/benefícios com a **UFIR-RJ 2026**. |
-| `README.md` | Este arquivo. |
+| **`Calculadora-Remuneracao-AFRE-RJ.html`** | **A ferramenta.** App standalone — um único arquivo, sem dependências. É o único que você precisa baixar. |
+| [`CHANGELOG.md`](CHANGELOG.md) | Histórico de versões (SemVer) e o procedimento de lançamento. |
+| [`docs/RESUMO-PROJETO.md`](docs/RESUMO-PROJETO.md) | Contexto técnico: modelo de cálculo, validações e o log de decisões (por que cada escolha foi feita). |
+| [`docs/DESIGN.md`](docs/DESIGN.md) | Sistema de design: paleta, tipografia, movimento e as armadilhas de cor do projeto. |
+| [`fontes/`](fontes/) | A **planilha-fonte** (a "verdade" do modelo) e a legislação: Res. SEFAZ 874/2026 (função gratificada), Res. 895/2026 (auxílios saúde e educação), LC 230/2026 + Decreto 50.356/2026 (ADF) e a UFIR-RJ 2026. |
+| [`legacy/`](legacy/) | Versões aposentadas e as variações de design não escolhidas. Nada aqui é mantido. |
+| [`tests/`](tests/) | O harness. Garante a **paridade R$ 0,00** do motor com a planilha e mede o cálculo contra a lei. Ver [`tests/README.md`](tests/README.md). |
 
 ---
 
