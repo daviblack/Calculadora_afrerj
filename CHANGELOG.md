@@ -8,7 +8,29 @@ Uma precisão importante, porque a frase "paridade R$ 0,00" circulava sem ela: a
 
 ---
 
-## v3.1.0 — 14/07/2026 · *atual*
+## v3.1.1 — 14/07/2026 · *atual*
+
+**Licenciamento, avisos legais e uma errata que já durava três versões.**
+
+Nenhuma mudança no cálculo. Os 4 cenários seguem em R$ 30.072,38 / 33.711,78 / 32.175,95 / 36.236,07.
+
+**Licença**
+- ⚖️ **`LICENSE.md`** — o projeto não tinha licença. Agora tem: licença proprietária de código à vista, em português, ancorada na Lei nº 9.609/1998. Concede uso educacional e redistribuição do arquivo **íntegro e inalterado**; veda derivados, remoção de créditos e uso comercial. Traz o que faltava e mais importava: **exclusão de garantia**, **limitação de responsabilidade** (a ferramenta influencia a decisão de aderir ou não ao RPC — e quem decide é o usuário), **negativa de vínculo institucional** e **cláusula de privacidade**.
+- 📄 **`NOTICE.md`** — avisos de terceiros. `legacy/prototipo-dc/` fica **expressamente fora** da licença: o `support.js` é um *runtime* empacotado de terceiros, sem aviso de copyright ou licença, cuja titularidade não foi determinada. Não deve ser publicado.
+- 📁 **`fontes/README.md`** — procedência de cada norma e de cada planilha. Registra que a "planilha-fonte" **não é documento oficial da SEFAZ-RJ**, e alerta que o `.docx` de normativos carrega, nos metadados, o nome de quem o redigiu.
+
+**Errata — a alegação de "zero dependências" era falsa**
+- 🐛 O app carrega **Google Fonts de CDN** (3 requisições a cada abertura, entregando IP e User-Agent do usuário ao Google). Mesmo assim, o README (`:45`, `:257`) e o `docs/RESUMO-PROJETO.md` (`:23`) afirmavam "sem dependências" / "zero dependências"; a entrada da v2.0.0 deste changelog diz "sem frameworks nem CDN". A afirmação nasceu verdadeira na v2.0.0 e deixou de ser na v3.0.0, quando a tipografia nova entrou — e ninguém percebeu.
+- ✅ Corrigido no README e no RESUMO-PROJETO. **A entrada histórica da v2.0.0 fica como está**: changelog é registro, não se reescreve. Esta errata é o conserto.
+- 🔒 A `LICENSE.md` declara a transmissão ao Google de forma expressa, em vez de prometer uma privacidade que o código não entrega. Uma licença que afirma o falso não blinda: expõe.
+
+**Aplicativo**
+- ⚖️ **Rodapé ganhou a negativa de vínculo** — "não é produto da SEFAZ-RJ, não tem endosso de órgão público" —, a promessa de privacidade (com a ressalva do Google Fonts) e o link para a licença. É a superfície que o usuário de fato lê; o aviso pertence a ela, não só a um `.md`.
+- 🐛 O tutorial chamava a base de dados de "planilha **oficial**" — única expressão do app que insinuava origem institucional, e falsa: a planilha é de trabalho. Agora diz "planilha-fonte", como o resto da documentação sempre disse.
+
+---
+
+## v3.1.0 — 14/07/2026
 
 **Gratificação de presença por participação em órgão de deliberação coletiva (Decreto 50.369/2026).**
 
