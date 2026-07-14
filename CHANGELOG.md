@@ -8,7 +8,33 @@ Uma precisão importante, porque a frase "paridade R$ 0,00" circulava sem ela: a
 
 ---
 
-## v3.0.1 — 13/07/2026 · *atual*
+## v3.1.0 — 14/07/2026 · *atual*
+
+**Gratificação de presença por participação em órgão de deliberação coletiva (Decreto 50.369/2026).**
+
+Nenhuma mudança no líquido padrão: a verba nasce desligada, e os 4 cenários seguem em R$ 30.072,38 / 33.711,78 / 32.175,95 / 36.236,07. Os 55 cenários da v3.0.1 foram comparados **id a id** contra o baseline guardado antes da mudança — **zero diferenças**.
+
+**Nova verba**
+- ➕ Novo parâmetro **"Órgão de deliberação coletiva"**: **Conselho de Contribuintes / Representantes da Fazenda** (250 UFIR-RJ por sessão realizada, até **14 sessões/mês** → R$ 1.240,10 por sessão, R$ 17.361,40 no teto) e **Junta de Revisão Fiscal** (100 UFIR-RJ, até **12/mês** → R$ 496,04 por sessão, R$ 5.952,48 no teto). O Decreto 50.369/2026 deu redação nova ao caput do art. 1º do Decreto 12.936/1989 e ao do Decreto 41.904/2009.
+- 🎖️ **Acréscimo de representação** por cargo no colegiado (parágrafo único de cada decreto, **não revogado**): no Conselho, Presidente +40%, Presidentes de Câmara e Representante Geral da Fazenda +20%, Secretário-Geral +10%, Secretários de Câmara +5%; na Junta, Presidente de Turma +20% e Secretário de Turma +5%.
+- 🧾 **Indenizatória**, como a função gratificada: entra no líquido **depois do IR**, sem previdência, fora do abate-teto e da base de 13º/férias.
+- ⚙️ Os valores por sessão (250 e 100 UFIR) viraram **variáveis globais editáveis** no drawer, como a moradia — um decreto novo muda o número sem tocar no código.
+
+**Modelagem**
+- ⚖️ A vedação do **art. 170 do Estatuto** (participar de mais de um órgão de deliberação coletiva) é enforçada **pelo modelo de dados**, não por validação: o órgão é um `<select>` com enum, e não há estado capaz de representar dois colegiados ao mesmo tempo. Não há regra a esquecer. É o mesmo idioma da função gratificada, que também é "só uma por vez".
+- 🤝 O **art. 171** (acumulável com quaisquer outras vantagens) não pede código nenhum — mas ganhou teste: Conselho + função Tipo I somam, sem trava.
+- 🔒 O clamp de sessões mora **dentro do `calc()`** (como o de dependentes do auxílio-educação), nunca escrevendo de volta no `state`. Normalizar no `refresh()` faria o link `#s=` divergir do estado persistido — e o canário de semeadura do harness existe justamente para pegar isso.
+
+**Testes**
+- 🎯 Nova suíte de motor com os valores **calculados à mão a partir do decreto** (o oráculo e o `unit.js` não podem tirar número nenhum do app). Varredura de invariantes ampliada para **41.472 combinações**, com duas monotonicidades novas: mais sessões nunca reduz o líquido, e o teto do órgão satura; cargo com representação nunca paga menos que o membro.
+- 🧪 **19 cenários novos** (74 no total), incluindo os clamps, o cargo órfão (um "Presidente do Conselho" com a Junta selecionada) e o órgão fora da tabela.
+- 🔒 Duas sabotagens novas no auto-teste (adulterar o valor da sessão e o teto da Junta) — ambas passam pelo contrato forjado e só o oráculo pega.
+- 🐛 **Correção latente no auto-teste**: a mutação `chart-sem-position` casava com um CSS que não existia mais desde a v3.0.0. Ela só continuava "funcionando" porque o golden era a v2.2.0; na promoção, teria virado um auto-teste inválido silencioso.
+- 📌 **Golden promovido da v2.2.0 para a v3.1.0.** Foi a primeira alteração intencional do motor desde que ele foi congelado — o redesenho da v3.0.0 passou porque não tocou numa vírgula do `calc()`. A ordem seguida: escrever a Camada 0 **antes** do app (ela afere contra a lei, não contra o golden), implementar, e só então promover, provando o zero-diff nos 55 cenários antigos.
+
+---
+
+## v3.0.1 — 13/07/2026
 
 **Validação do cálculo contra as fontes, e o primeiro teste que pode reprovar uma fórmula errada.**
 
@@ -114,3 +140,14 @@ Ao lançar uma versão:
 2. **Arquive a versão anterior** em `legacy/vX.Y.Z-<nome>.html` antes de sobrescrever o app.
 3. **Incremente o número**: correção → PATCH · novidade compatível → MINOR · mudança de resultado ou redesenho completo → MAJOR.
 4. Adicione a entrada no topo e mova o marcador *atual*.
+
+### Se a mudança tocar o núcleo de cálculo
+
+`tests/golden/original.html` congela o texto de `DEFAULTS`, `DEFAULT_STATE`, `calc`, `buildParams`, `detectPreset` e `applyPreset`. Mexer em qualquer um deles reprova a checagem C5 do contrato, e o único jeito de destravar é **promover o golden** — que é exatamente o ataque que o `tests/README.md` descreve: "corrompi o app e regerei o golden junto". A promoção é legítima, mas só nesta ordem:
+
+1. **Escreva a Camada 0 primeiro** (`oracle.js`/`unit.js`/`invariants.js`), com os números tirados da norma e da planilha, **nunca do app**. Ela é a única camada que não depende do golden — é ela que impede a promoção de congelar um erro. Se ela não ficar verde, **pare**.
+2. `cp tests/golden/baseline.json <algum lugar seguro>` — o baseline vigente é a única testemunha de que nada regrediu.
+3. `cp <app> tests/golden/original.html` e recalcule `tests/golden/source.sha256`.
+4. `node tests/contract.js <app> --update` e depois `node tests/gen-baseline.js`.
+5. **Prove o zero-diff**: compare, cenário a cenário e id a id, o baseline novo contra o guardado. Os textos didáticos (`glos`, `premissas`, `tutSteps`, `chartGuide`) são prosa e podem mudar; **qualquer outro dígito que se mexa é regressão**. Uma verba nova, desligada por padrão, tem de sair com zero diferenças.
+6. `node tests/self-test.js` — e confira que as mutações ainda *aplicam* no golden novo (elas casam com texto literal do arquivo; um CSS reescrito as transforma em no-op silencioso).
