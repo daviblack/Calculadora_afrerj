@@ -53,10 +53,10 @@ A calculadora é um **aplicativo web standalone** (um único arquivo HTML, sem f
 
 ### Principais recursos
 
-- ✅ **4 cenários padrão** prontos (com/sem reajuste de 11,56%, com/sem triênios).
-- ✅ **Painel de parâmetros** totalmente personalizável (classe, RPC e alíquota, triênios, PPE, auxílio moradia, ajudas de custo, **função gratificada de chefia/assessoramento/direção** e **gratificação de presença em órgão de deliberação coletiva**).
-- ✅ **Premissas avançadas** ajustáveis por *toggles* (ex.: triênio sobre produtividade, PPE tributada) — nunca alteradas silenciosamente.
-- ✅ **Variáveis globais editáveis** (tetos, alíquotas, reajuste) para o caso de a legislação mudar.
+- ✅ **Reajuste de 11,56% (2026) já incorporado** ao vencimento-base e à produtividade — ao abrir, você vê o líquido do auditor entrante (3ª classe) com o reajuste: **R$ 32.175,95**.
+- ✅ **Painel de parâmetros** totalmente personalizável (classe, RPC e alíquota, triênios/ADF, PPE, auxílio moradia, ajudas de custo, **função gratificada de chefia/assessoramento/direção** e **gratificação de presença em órgão de deliberação coletiva**).
+- ✅ **Detalhamento como na folha**: vencimento-base, produtividade e o **ADF/triênios em linha própria**, depois cada desconto e cada acréscimo.
+- ✅ **Variáveis globais editáveis** (tetos, alíquotas, UFIR-RJ e a fração do reajuste incorporado) para o caso de a legislação mudar.
 - ✅ **Gráficos interativos** (SVG, com *hover*) e caixas **"Como ler"** em cada um.
 - ✅ **Régua dos tetos** no topo: mostra onde o seu bruto cai entre o **teto do RGPS** (onde a previdência para) e o **teto do STF** (onde o abate começa).
 - ✅ **Modo escuro**, acompanhando o sistema ou alternável no cabeçalho.
@@ -86,61 +86,53 @@ A ferramenta é **um único arquivo HTML** — não precisa instalar nada.
 
 Este é um guia detalhado para tirar o máximo da ferramenta. (O app também traz uma versão resumida na aba **"Como usar"**.)
 
-### Passo 1 — Comece por um cenário padrão
+### Passo 1 — Informe o seu caso
 
-No topo da página, há quatro botões em **"Cenários padrão"**:
-
-1. **Base, sem reajuste** — o líquido de hoje, do auditor entrante (3ª classe), sem reajuste e sem triênios.
-2. **Sem reajuste + triênios** — acrescenta 3 triênios (9 anos de serviço público anterior que contam).
-3. **Reajuste 11,56%** — aplica o reajuste prometido para 2026.
-4. **Reajuste + triênios** — combina os dois.
-
-👉 Clique em um deles para ver os números na hora. Eles são o **ponto de partida** e reproduzem a planilha-fonte do projeto. A etiqueta ao lado mostra qual cenário está ativo ("Cenário padrão 1", etc.) ou "Cenário personalizado" se você alterar algo.
-
-### Passo 2 — Personalize para o seu caso
+Ao abrir, o app já mostra o **ponto de partida**: o líquido do auditor entrante (3ª classe), sem triênios, com o reajuste de 11,56% de 2026 **já incorporado** — R$ 32.175,95, que reproduz a planilha-fonte do projeto (o reajuste não é opção do painel; se um dia o percentual mudar, ele se edita em "Variáveis globais"). Daí em diante, é o **seu** caso que manda.
 
 No **painel da esquerda** ("Parâmetros do seu caso" — no celular, toque para expandir):
 
 - **Classe na carreira** — 3ª (entrada), 2ª ou 1ª (topo).
-- **Reajuste de 11,56% (2026)** — ligue/desligue o reajuste previsto.
 - **Adesão à previdência complementar (RPC)** — ligue para simular a adesão ao RJPrev e ajuste a **alíquota** (de 5,5% a 8,5%) no controle deslizante.
-- **Triênios** — ligue e informe seus **anos de serviço público anterior**; escolha se esse tempo **conta** ou **não conta** para triênios.
-- **PPE — Prêmio de Produtividade** — ligue/desligue e ajuste o valor médio mensal.
+- **Triênios / ADF** — ligue e informe seus **anos de serviço público anterior**; escolha se esse tempo **conta** ou **não conta** para triênios. O adicional incide sobre vencimento-base **e** produtividade (LC 230/2026, art. 4º §1º) e aparece em linha própria no Detalhamento.
+- **PPE — Prêmio de Produtividade** — ligue/desligue e ajuste o valor médio mensal. Informe o valor **líquido**: a PPE entra no fim da conta e não passa pela base do IR.
 - **Auxílio Moradia (barreira fiscal)** — ative apenas se sua lotação for em barreira fiscal.
 - **Função de chefia / assessoramento / direção** — se você ocupar uma função gratificada (Resolução SEFAZ 874/2026), escolha o tipo (I a IV). A calculadora acrescenta o percentual correspondente do teto (STF) ao líquido — veja detalhes na seção do cálculo.
 - **Órgão de deliberação coletiva** — se você for membro do **Conselho de Contribuintes** (ou Representante da Fazenda) ou da **Junta de Revisão Fiscal**, escolha o órgão, o seu cargo no colegiado e quantas sessões você realizou no mês. Só é possível escolher **um** órgão: o Estatuto veda participar de mais de um (art. 170). Em compensação, a gratificação **acumula com todo o resto** (art. 171), inclusive com a função gratificada.
 - **Ajudas de custo** — alimentação e transporte.
 
-> 🔧 **Premissas avançadas** (no fim do painel, em "Premissas avançadas do modelo"): controles para quem quer revisar o modelo — *triênio incide sobre a produtividade*, *PPE tributada* e *RPPS sobre todo o bruto sem adesão*. Por padrão, eles reproduzem exatamente a planilha-fonte; mexa apenas se souber o que está testando.
+> 📌 Três coisas o modelo trata como **fato**, não como opção: o ADF/triênio incide sobre VB + produtividade (LC 230/2026, art. 4º §1º); a PPE informada já é líquida e nunca entra na base do IR; e o RPPS é de 14% limitado ao teto do RGPS, aderindo ou não ao RPC (EC 103/2019). Até a v3.1.1 esses três pontos eram interruptores em "Premissas avançadas"; a dúvida se resolveu, e eles saíram do painel.
 
-### Passo 3 — Leia o resultado (aba Calculadora)
+### Passo 2 — Leia o resultado (aba Calculadora)
 
 - O **cartão grande no topo** mostra o **líquido mensal estimado**, o valor anual (×12) e uma estimativa com **13º + ⅓ de férias**.
 - Se a remuneração ultrapassar o **teto do STF**, aparece um aviso de **abate-teto**.
 - O gráfico **"Do bruto ao líquido"** (cascata) mostra, passo a passo: começa no **bruto** (azul), as barras **vermelhas descem** (previdência e IR descontam) e as **verdes sobem** (ajudas e PPE acrescentam) até o **líquido** final.
-- O painel **"Detalhamento"** lista cada item em reais.
-- Os **KPIs** resumem: bruto do cargo, total de deduções, **quanto sobra** (%), alíquota efetiva de IR e carga previdenciária.
+- O painel **"Detalhamento"** lista cada item em reais, como na folha: **Vencimento base**, **Produtividade** e — quando houver triênios — a linha **"ADF / Triênios (N triênios · +X%)"**, antes do Total bruto; depois, cada desconto e cada acréscimo. Cada linha exibe o arredondamento do seu próprio valor, como na planilha-fonte — por isso a soma das linhas pode ficar um centavo abaixo do total, o mesmo efeito que o Excel produz; nenhum valor é ajustado para "fechar a conta".
+- Os **KPIs** resumem: bruto do cargo (vencimento + produtividade + ADF), total de deduções, **quanto sobra** (%), alíquota efetiva de IR e carga previdenciária.
 - **"Visão do futuro"** projeta seu líquido em **3 e 6 anos**, quando você progride de classe.
 
-### Passo 4 — Olhe para o futuro (aba Projeção no tempo)
+### Passo 3 — Olhe para o futuro (aba Projeção no tempo)
 
 - Ajuste o **horizonte** (5 a 35 anos) no controle deslizante.
 - **Ponto de saturação**: compara o bruto "de direito" (linha tracejada) com o **efetivamente pago** após o abate-teto (linha cheia). Quando elas se separam, você **bateu o teto do STF** e ganhos extras (como triênios) param de aumentar o líquido.
 - **Deduções no tempo**: área empilhada de previdência + IR. Conforme o salário sobe, a fatia do IR cresce mais rápido (progressividade).
 - **Ganho acumulado com triênios** e **Patrimônio de carreira** (líquido somado ano a ano) dimensionam o tamanho financeiro da carreira.
 
-### Passo 5 — Compare decisões (aba Comparações)
+### Passo 4 — Compare decisões (aba Comparações)
 
 - **Aderir ao RPC × conta própria**: simula o patrimônio acumulado nos dois caminhos. O RPC recebe **contrapartida do Estado**; por conta própria você fica só com a sua parte. Ajuste o rendimento do fundo, o rendimento próprio, a contrapartida e o horizonte. A ferramenta calcula a **taxa que você precisaria render sozinho para empatar** com o RPC.
 - **Líquido mensal: adesão × não adesão** — mostra que **aderir reduz o líquido de hoje** (a contribuição vira fundo), com o custo mensal explicitado.
 - **Líquido por classe** e **Impacto marginal** de cada parâmetro (quanto cada item soma ou retira do seu líquido).
 
-### Passo 6 — Salve e compartilhe
+### Passo 5 — Salve, compartilhe, recomece
+
+Tudo isso fica nas ações do **cabeçalho** (no celular, só os ícones):
 
 - **🔗 Compartilhar** gera um link que carrega exatamente o seu cenário.
 - **↧ Exportar PDF** abre a impressão (salve como PDF).
-- **⚙ Variáveis globais** permite editar tetos, alíquotas e reajuste, caso a legislação mude.
-- **↺ Resetar** volta aos valores padrão. Seus parâmetros ficam salvos no navegador entre as visitas.
+- **⚙ Variáveis globais** permite editar tetos, alíquotas, UFIR-RJ e a fração do reajuste incorporado, caso a legislação mude.
+- **↺ Resetar** volta aos valores padrão (a 3ª classe com o reajuste, R$ 32.175,95). Seus parâmetros ficam salvos no navegador entre as visitas.
 
 ---
 
@@ -148,11 +140,21 @@ No **painel da esquerda** ("Parâmetros do seu caso" — no celular, toque para 
 
 A remuneração líquida é montada nesta ordem (a "cascata"):
 
-1. **Bruto** = (Vencimento Base + Produtividade) × fator de reajuste × fator de triênio
+1. **Bruto** = (Vencimento Base + Produtividade) × 1,1156 (reajuste de 2026 incorporado) **+ ADF**, com **ADF = (Vencimento Base + Produtividade) × 1,1156 × (fator − 1)** — o adicional por tempo é rubrica própria, como na folha, e incide sobre as duas parcelas (LC 230/2026, art. 4º §1º). O fator depende do número de triênios:
+
+   | Triênios | Fator | ADF sobre VB + produtividade |
+   |---|---|---|
+   | 0 | 1,00 | — |
+   | 1 | 1,10 | +10% |
+   | 2 | 1,15 | +15% |
+   | 3 (9 anos) | 1,20 | +20% |
+   | … | +5% por triênio | … |
+   | 11 ou mais | 1,60 | **+60% (teto)** |
+
 2. **Abate-teto** = excedente acima do teto do STF (subtraído do bruto)
 3. **RPPS (RioPrev)** = 14% sobre o bruto, **limitado ao teto do RGPS** (para o novo entrante, conforme a EC 103/2019 — aderindo ou não ao RPC)
 4. **RPC (RJPrev)** = alíquota (5,5%–8,5%) sobre o que **excede** o teto do RGPS, **apenas se houver adesão**
-5. **Base de IR** = bruto − previdências (+ PPE, se marcada como tributada)
+5. **Base de IR** = bruto − previdências (a PPE informada já é líquida e não entra)
 6. **IRPF** = tabela progressiva mensal de 2026 (método da parcela a deduzir)
 7. **Líquido** = bruto − previdências − IR + alimentação + transporte + PPE + moradia + função gratificada + auxílio-saúde + auxílio-educação **+ gratificação de presença em colegiado**
 
@@ -202,15 +204,16 @@ Para manter a ferramenta **simples, viável e didática**, foram adotadas as seg
 | Tema | Premissa adotada |
 |---|---|
 | **Inflação** | **Desconsiderada.** Todos os valores são nominais; não há correção monetária ao longo do tempo nas projeções. |
-| **Imposto de Renda** | Incide sobre a base **bruto − previdências**, pela **tabela progressiva mensal de 2026** (parcela a deduzir). **Sem dependentes** e sem o desconto simplificado. A PPE, por padrão, **não** entra na base (ajustável). |
-| **Previdência (RPPS)** | Contribuição de **14% limitada ao teto do RGPS** para o novo entrante (EC 103/2019), aderindo ou não ao RPC. O modelo antigo (14% sobre todo o bruto sem adesão) fica disponível como *toggle* avançado. |
+| **Reajuste de 2026** | **11,56% sobre vencimento-base e produtividade, sempre aplicado** (última parcela a partir de novembro/2026). Não é opção do painel; a fração fica em "Variáveis globais" para o caso de o percentual mudar. |
+| **Imposto de Renda** | Incide sobre a base **bruto − previdências**, pela **tabela progressiva mensal de 2026** (parcela a deduzir). **Sem dependentes** e sem o desconto simplificado. A PPE é considerada **pelo valor líquido** informado e **não** entra na base. |
+| **Previdência (RPPS)** | Contribuição de **14% limitada ao teto do RGPS** para o novo entrante (EC 103/2019), **aderindo ou não** ao RPC. Não há modelo alternativo: a lei não tem o ramo "14% sobre todo o bruto". |
 | **Previdência complementar (RPC)** | Modelada como contribuição opcional sobre o que excede o teto do RGPS, com contrapartida do Estado. |
 | **Investimentos (RPC × conta própria)** | Usa uma **taxa de retorno anual única**. **Não modela composição de carteira**, alocação por ativos, liquidez, risco, nem tributação sobre os rendimentos do investimento por conta própria. |
 | **Verbas indenizatórias e PPE** | Tratadas como **estimativas**; não sofrem IR nem previdência e não entram no teto. Alimentação (450 UFIR), transporte (650 UFIR) e moradia (1.500 UFIR) são **indexadas à UFIR-RJ**. |
 | **Auxílios saúde e educação** | Res. SEFAZ 895/2026. **Indenizatórios**, por **reembolso mediante comprovação**, extra-teto, sem IR nem previdência e fora de 13º/férias. Saúde até **300 UFIR** (global); educação até **500 UFIR por dependente** (até 3). Padrão = teto; ajustável. Nas projeções, assumem-se **mantidos** e constantes (não modela dependentes envelhecendo). |
 | **Função gratificada** | Percentual **máximo** do teto (STF) conforme a Resolução SEFAZ 874/2026 (I 30%, II 27%, III 23,5%, IV 20%). Tratada como **extra-teto e indenizatória** (sem IR nem previdência). Assume-se que a função é **mantida** ao longo da carreira nas projeções; **não acumula** com outra função. |
 | **Gratificação de presença** | Dec. 50.369/2026. Por **sessão realizada**: 250 UFIR no Conselho de Contribuintes (até 14/mês) e 100 UFIR na Junta de Revisão Fiscal (até 12/mês), com acréscimo de representação para presidências e secretarias. **Indenizatória**, extra-teto, sem IR nem previdência, fora de 13º/férias. **Vedado** participar de mais de um órgão (Estatuto, art. 170); **acumulável** com as demais vantagens (art. 171). Nas projeções, assume-se o número de sessões **constante** ao longo da carreira. |
-| **Triênios / ADF** | Modelados como 1º +10%, demais +5%, teto de 60%. Para o novo auditor, é o **ADF** (LC 230/2026, Decreto 50.356/2026), com o mesmo cálculo, porém condicionado a desempenho/capacitação/disciplina. Progressão de classe assumida a cada 3 anos nas projeções. |
+| **Triênios / ADF** | Modelados como 1º +10%, demais +5%, teto de 60%, **sobre vencimento-base + produtividade** (LC 230/2026, art. 4º §1º), em rubrica própria. Para o novo auditor, é o **ADF** (LC 230/2026, Decreto 50.356/2026), com o mesmo cálculo, porém condicionado a desempenho/capacitação/disciplina. Progressão de classe assumida a cada 3 anos nas projeções. |
 | **13º e férias** | Aparecem como **estimativa aproximada** (≈ líquido ×12 + 13º + ⅓ de férias), não como cálculo mês a mês detalhado. |
 | **Caráter geral** | É uma **estimativa de apoio à decisão**. **Não substitui** o contracheque oficial nem a legislação vigente. |
 
@@ -218,19 +221,10 @@ Para manter a ferramenta **simples, viável e didática**, foram adotadas as seg
 
 ## 🗒️ Histórico de versões
 
-**Versão atual: `v3.1.0`** — gratificação de presença em órgão de deliberação coletiva (Dec. 50.369/2026). Sem mudança no líquido padrão: a verba nasce desligada, e os 55 cenários da versão anterior saíram com **zero diferenças**. O motor (bruto, previdências e IRPF) segue reproduzindo a planilha-fonte com **diferença de R$ 0,00** nos 4 cenários padrão, até a última casa decimal. O líquido final fica **R$ 2.573,84 acima** do da planilha porque a Res. SEFAZ 895/2026 reindexou alimentação e transporte à UFIR-RJ — atualização legal, não regressão.
+**Versão atual: `v4.0.0`** (23/09/2026) — o reajuste de 11,56% passou a ser **sempre aplicado**, e com isso saíram os 4 cenários padrão, o interruptor de reajuste e as "premissas avançadas" (ADF sobre VB + produtividade, PPE líquida e RPPS limitado ao teto do RGPS viraram fatos do modelo). **O líquido padrão mudou de R$ 30.072,38 para R$ 32.175,95**: o app deixou de abrir na aba 1 da planilha ("sem reajuste") e passou a abrir na aba 3 ("com reajuste") — o motor não mudou de fórmula, mudou de ponto de partida. O Detalhamento ganhou a linha **ADF / Triênios**, e o vencimento-base e a produtividade deixaram de carregar o fator de triênio embutido. A paridade com as **4 abas** da planilha continua asserida pelo harness (as abas sem reajuste, via fator neutro `g.reajuste = 0`); o líquido final segue **R$ 2.573,84 acima** do da planilha pela reindexação de alimentação e transporte à UFIR-RJ (Res. SEFAZ 895/2026).
 
 📄 **O histórico completo está em [`CHANGELOG.md`](CHANGELOG.md)** — todas as versões, da v0.1.0 até hoje, com o que mudou em cada uma e por quê.
 
----
-
-## 🧭 Roadmap — próximos passos
-
-Ideias mapeadas para versões futuras (sujeitas a prioridade):
-
-- [ ] **Renda na aposentadoria** estimada (converter o saldo do RPC em renda mensal).
-- [ ] **VPL** da decisão do RPC (trazer valores a valor presente, descontando uma taxa real).
-- [ ] **"Custo do teto"** acumulado como KPI dedicado.
 
 Tem uma sugestão? Veja [como contribuir](#-como-contribuir--sugerir-melhorias). 🙌
 
